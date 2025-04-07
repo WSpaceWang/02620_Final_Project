@@ -1,0 +1,43 @@
+1. 6
+2. shiyuwa2, enhaoh, joewang, jiachenm
+3. 8
+
+4
+4. How clearly the problem is formulated? Select in a range from 1 to 5.
+5. Provide brief justification on your rating for "How clearly the problem is formulated? "
+The Parkinson’s disease (PD) is well-defined. And the problem is quite clear, highlighting the need for early detection of PD using machine learning and speech-based biomarkers. But providing more information about the speech features, how they are related to PD, and how they can help to early diagnose PD in the introduction part will be better. 
+
+4
+6. How appropriate is the dataset choice? Select in range from 1 to 5.
+7. Provide brief justification on your rating for "How appropriate is the dataset choice? "
+The data components seems appropriate as it includes speech features from patients with early untreated PD, high-risk patients, and healthy controls. But the dataset details (e.g., source, number of samples, types of speech features) are not explicitly stated. Is it the mPower dataset mentioned in the Supporting Paper part? It needs to be clarified. 
+
+8. How feasible are the proposed methods? Select in a range from 1 to 5.
+9. Provide brief justification on your rating for "How feasible are the proposed methods?"
+The proposed methods (feature selection, SVM classification, and CNN-based deep learning) are well-established and feasible given this problem. And the SVM with an RBF kernel is a robust choice for classification tasks with high-dimensional data like speech features.
+
+2
+10. How many methods are described? Select between 0 to 3. If more than 3 is described, select 3.
+4
+11. Are the three methods properly described? Select in a range from 1 to 5. Select in a range between 1 to 5.
+12. Provide brief justification on your rating for "Are the three methods properly described?"
+Feature selection is more of a preprocessing step rather than a standalone method (aka a model). The SVM is well-described, including normalization, RBF kernel choice, and hyperparameter tuning. But the CNN part needs a more detailed explanation. 
+
+13. How appropriate are the proposed methods for the problem being solved? Briefly explain your decision for each model.
+Feature Selection (PCA, RFE) is highly appropriate to reduce dimensionality, but I think it might not belong to the method required in the final project, it should be a model. SVM with RBF Kernel is well-suited for the classification of high-dimensional feature sets. CNN is a more powerful model than SVM, the performance on this task is exciting. 
+
+14. How appropriate is the proposed evaluation metrics to evaluate the methods? Select in a range between 0 to 5. Select 0 if evaluation criteria is not mentioned.
+15. Provide brief justification on your rating for "How appropriate is the proposed evaluation metrics to evaluate the methods?"
+The proposed evaluation metrics (accuracy, precision, recall, F1-score, and AUC-ROC) are highly appropriate for this classification task. Given the problem of the medical diagnosis, precision and recall are particularly important. 
+
+16. How many related works are discussed? Select in a range from 0 to 2. If more than 2 related works are discussed, select 2.
+17. How appropriate is the choice of related works or how relevant they are to the main problem? Select in a range between 1 to 5.
+18. Provide brief justification on your rating for "How appropriate is the choice of related works or how relevant they are to the main problem?"
+Both selected related works are highly relevant to the research topic, as they focus on speech-based biomarkers for early Parkinson’s disease detection.
+
+19. Briefly mention the overall strengths of the proposal.
+The study addresses a crucial medical challenge: early diagnosis of Parkinson’s disease. The proposal builds upon well-established research. The evaluation metrics are appropriate. 
+
+20. Briefly mention the overall weaknesses of the proposal.
+The dataset description needs more details. Feature selection is more of a preprocessing step rather than a standalone method. The choice of CNN needs more clarification. 
+

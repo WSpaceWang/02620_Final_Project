@@ -1,0 +1,73 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{titling}
+\usepackage{amsmath}
+\usepackage{amssymb} 
+\usepackage{graphicx} % For image
+\usepackage{float} % For image H option
+\usepackage{enumitem} % For enumerate
+\usepackage{bm} % For bold math symbols
+\usepackage[margin=1in]{geometry}
+
+\begin{document}
+\title{\textbf{Segmentation of Vessels in Retinal Images}}
+\author{Team Members: Shiyu Wang, Enhao He, Jiacheng Ma, Joe Wang}
+\date{}
+\setlength{\droptitle}{-2.75cm}
+\maketitle
+\vspace{-2cm}
+
+
+
+\section{Introduction}
+\textbf{Retinal vessel segmentation} plays a critical role in the diagnosis, especially early diagnosis, and treatment of several ocular diseases, such as diabetic retinopathy and glaucoma \cite{1}. Different symptoms of ocular diseases can be identified by the geometric features (like width and tortuosity) of arteries \cite{review2022}, providing essential information for clinical assessment. \\
+However, the segmentation of the retinal image is a challenging task because of the complex construction of the blood vessels, the low contrast between the vessels and the background and the illumination inconsistencies across the retinal image. \\ 
+In this project, we aim to develop and evaluate multiple machine learning approaches for accurate segmentation of blood vessels in retinal images using the \textbf{DRIVE} (Digital Retinal Images for Vessel Extraction) database, which provides a standardized dataset for comparative studies.
+
+
+
+\section{Related Work}
+Traditionally, ophthalmologists manually segmented vessels, a time-consuming process based on clinical and geometric features \cite{review2025}. Recently, deep learning advancements have led to automated methods with impressive results: 
+\begin{enumerate}
+    \item Yang Li et al. \cite{work1} developed GT-DLA-dsHFF (Transformer-Based Approach), combining global transformers (GT) with dual local attention (DLA) network to capture both global contexts and local details in vessel structures, achieving the \textbf{\textit{AUC value}} of \textbf{0.9863}, 0.9905 and 0.9853 on \textbf{DRIVE}, STARE and HRF dataset, respectively. 
+    \item Di Li and Susanto Rahardja \cite{work2} introduced BSEResU-Net (U-Net Based Approach), an encoder-decoder architecture utilizing attention mechanisms and skip connections for enhanced feature representation, achieving the \textbf{\textit{F1-score}} of \textbf{0.8324}, 0.8368 and 0.8237 on \textbf{DRIVE}, STARE and HRF dataset, respectively. 
+    \item Meilin Liu et al. \cite{work3} proposed AA-WGAN (GAN-Based Approach), an attention augmented Wasserstein generative adversarial network utilizing a U-shaped network with attention augmented convolution and squeeze-excitation module as the generator, achieving \textbf{\textit{accuracy}} of \textbf{0.9651}, 0.9719 and 0.9694 on \textbf{DRIVE}, STARE, and CHASE\_DB1 datasets, respectively.
+\end{enumerate}
+
+
+
+\section{Methods}
+Based on our review of existing approaches, most methods rely on deep learning techniques to extract features and learn complex representations for vessel segmentation. 
+\newpage
+\noindent In this project, we will challenge the use of machine learning methods to finish the task of retinal vessel segmentation with high accuracy and efficiency. Specifically, we propose to implement and evaluate \textbf{four} machine learning methods for this task: 
+\begin{enumerate}
+    \item \textbf{K-means Clustering}: An unsupervised clustering algorithm that groups pixels based on similarity. We will apply it to cluster retinal image pixels into vessel and non-vessel categories based on intensity and color features, using preprocessing techniques like contrast enhancement to improve accuracy.
+    \item \textbf{Naive Bayes Classifier}: A probabilistic classifier that applies Bayes' theorem under the assumption of feature independence. We will train it on manually segmented images, learning the probability distributions of vessel and non-vessel pixels using features such as intensity and gradient information.
+    \item \textbf{Support Vector Machine (SVM)}: A supervised learning algorithm that finds an optimal hyperplane to separate classes. We will extract pixel-wise features, such as intensity and local contrast, and use linear and non-linear kernels to improve vessel-background separability, training the model on labeled pixels.
+    \item \textbf{Random Forest Classifier}: An ensemble learning method using multiple decision trees, will classify pixels based on handcrafted features, including texture and edge information. By leveraging feature importance and majority voting, it enhances robustness and accuracy in vessel segmentation.
+\end{enumerate}
+
+
+
+\section{Evaluation}
+To comprehensively evaluate our methods, we will use several metrics including accuracy, sensitivity, specificity, F1-score, and the area under the ROC curve (AUC). \\
+We will compare our results against existing methods in the references to assess the effectiveness of our proposed approaches. 
+
+
+
+\section{Additional Work}
+Beyond the primary goal of accurate vessel segmentation, we propose to extend our research to explore the clinical utility of our segmentation results. Specifically, we aim to implement one more binary classification task based on the segmented results to distinguish between healthy retinas and those showing signs of mild early diabetic retinopathy. The DRIVE dataset provides an appropriate testing ground for this application, containing 40 photographs where 33 are healthy and 7 show signs of mild early diabetic retinopathy. \\
+This is just an exploratory extension of our work, which might be hard because of the limited sample size. And the final success also depends heavily on our previous segmentation accuracy. However, we're still interested to see if even basic machine learning classifiers can detect subtle patterns in vessel morphology that correlate with early diabetic changes. This additional experiment may yield interesting insights while demonstrating a practical application of our segmentation work.
+
+
+
+\begin{thebibliography}{9}
+\bibitem{1} Li W, Xiao Y, Hu H, et al. Retinal Vessel Segmentation Based on B-COSFIRE Filters in Fundus Images. Front Public Health. 2022;10:914973. Published 2022 Sep 9. doi:10.3389/fpubh.2022.914973
+\bibitem{review2022} Khandouzi A, Ariafar A, Mashayekhpour Z, Pazira M, Baleghi Y. Retinal Vessel Segmentation, a Review of Classic and Deep Methods. Ann Biomed Eng. 2022;50(10):1292-1314. doi:10.1007/s10439-022-03058-0
+\bibitem{review2025} Liu Z, Sunar MS, Tan TS, Hitam WHW. Deep learning for retinal vessel segmentation: a systematic review of techniques and applications. Med Biol Eng Comput. Published online February 18, 2025. doi:10.1007/s11517-025-03324-y
+\bibitem{work1} Li Y, Zhang Y, Liu JY, et al. Global Transformer and Dual Local Attention Network via Deep-Shallow Hierarchical Feature Fusion for Retinal Vessel Segmentation. IEEE Trans Cybern. 2023;53(9):5826-5839. doi:10.1109/TCYB.2022.3194099
+\bibitem{work2} Li D, Rahardja S. BSEResU-Net: An attention-based before-activation residual U-Net for retinal vessel segmentation. Comput Methods Programs Biomed. 2021;205:106070. doi:10.1016/j.cmpb.2021.106070
+\bibitem{work3} Liu M, Wang Z, Li H, Wu P, Alsaadi FE, Zeng N. AA-WGAN: Attention augmented Wasserstein generative adversarial network with application to fundus retinal vessel segmentation. Comput Biol Med. 2023;158:106874. doi:10.1016/j.compbiomed.2023.106874
+\end{thebibliography}
+
+
+\end{document}

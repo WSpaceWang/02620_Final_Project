@@ -1,0 +1,40 @@
+1. 6
+2. shiyuwa2, enhaoh, joewang, jiachenm
+3. 7
+
+4. How clearly the problem is formulated? Select in a range from 1 to 5.
+5. Provide brief justification on your rating for "How clearly the problem is formulated? "
+The problem statement is clear, aiming at predicting the expression levels of a set of genes based on a smaller subset of landmark genes. In this topic, which machine learning method can perform better is quite interesting. Additionally, the proposed solutions (chunking and PCA) demonstrate thoughtful consideration of practical challenges. 
+
+6. How appropriate is the dataset choice? Select in range from 1 to 5.
+7. Provide brief justification on your rating for "How appropriate is the dataset choice? "
+The dataset choice is highly appropriate for this problem. It integrates multiple well-established genomic resources (GEO, GTEx, and 1000 Genomes), providing a comprehensive and diverse set of gene expression profiles. Also, the use of the quantile-normalization is nice. 
+
+8. How feasible are the proposed methods? Select in a range from 1 to 5.
+9. Provide brief justification on your rating for "How feasible are the proposed methods?"
+The proposed methods are feasible and well-suited for the task. The model starts from relatively simple models (k-NN & MLR) to more complex models (neural networks, Random Forest & XGBoost). All these methods are commonly used in gene expression prediction and can handle high-dimensional biological data. 
+
+10. How many methods are described? Select between 0 to 3. If more than 3 is described, select 3.
+11. Are the three methods properly described? Select in a range from 1 to 5. Select in a range between 1 to 5.
+12. Provide brief justification on your rating for "Are the three methods properly described?"
+The methods are generally well-described, providing insight into their assumptions and how they apply to the problem. 
+
+13. How appropriate are the proposed methods for the problem being solved? Briefly explain your decision for each model.
+s
+
+4
+14. How appropriate is the proposed evaluation metrics to evaluate the methods? Select in a range between 0 to 5. Select 0 if evaluation criteria is not mentioned. 
+15. Provide brief justification on your rating for "How appropriate is the proposed evaluation metrics to evaluate the methods?"
+The proposal includes commonly used evaluation metrics (Accuracy, Precision, Recall, and F1 Score). The introduction of cross-validation is a good practice. But this task is more like a regression task, so including some metrics like Mean Squared Error (MSE), which can better process the continuous gene expression data, is recommended. 
+
+16. How many related works are discussed? Select in a range from 0 to 2. If more than 2 related works are discussed, select 2.
+4
+17. How appropriate is the choice of related works or how relevant they are to the main problem? Select in a range between 1 to 5.
+18. Provide brief justification on your rating for "How appropriate is the choice of related works or how relevant they are to the main problem?"
+The selected related works are relevant to the study of gene expression prediction, especially the first article, whose purpose is similar to this proposal. The second article is to mention dimensionality reduction and probabilistic modeling, but the topic is not really relevant. 
+
+19. Briefly mention the overall strengths of the proposal.
+The topic of predicting gene expression is useful. And how the general machine learning methods can perform on this topic is really interesting. The diverse datasets provide sufficient data. The methods involved are from simple to complex, which is very valuable for comparison. 
+
+20. Briefly mention the overall weaknesses of the proposal.
+The evaluation metrics can include more evaluation metrics for regression tasks. The project result can also complement the comparison with existing research results, like the first reference. 
