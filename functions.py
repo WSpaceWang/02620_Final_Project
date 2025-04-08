@@ -50,7 +50,17 @@ def load_sample(img_path, mask_path, manual_path):
     return x, y
 
 
-# 1 Find the best n_clusters
+
+
+
+
+
+
+
+
+
+
+# 2 Find the best n_clusters
 def find_best_n_clusters(X_all, Y_all, min_clusters, max_clusters):
     auc_mean = pd.DataFrame(index=np.arange(min_clusters, max_clusters), columns=["n_clusters", "AUC_Mean"])
     for n in np.arange(min_clusters, max_clusters):
@@ -78,7 +88,7 @@ def find_best_n_clusters(X_all, Y_all, min_clusters, max_clusters):
     return auc_mean, best_n_clusters, best_auc_mean
 
 
-# 2 KMeans Clustering
+# 3 KMeans Clustering
 # Clustering function
 def kmeans(img_x, img_y, n_clusters):
     # Reshape the image data to (584*565, 3) {All with shape (584, 565, 3)}
@@ -132,7 +142,7 @@ def evaluate_clusters(labels, img_y, n_clusters):
     return best_cluster, best_auc
 
 
-# 3 Visualization
+# 4 Visualization
 # Visualize single image
 def visualize_single(img_x, n_clusters):
     X = img_x.reshape(-1, 3)
@@ -192,7 +202,7 @@ def visualize_all(X_all, n_clusters):
     plt.show()
 
 
-# 4 Optimized KMeans Clustering
+# 5 Optimized KMeans Clustering
 # Identify the most likely vessel clusters
 def identify_vessel_clusters(labels, ground_truth, n_clusters, top_k):
     true_vessel = (ground_truth > 0).astype(np.int32).reshape(-1)
@@ -242,7 +252,10 @@ def optimized_kmeans(img_x, img_y, n_clusters, top_k):
         auc_val = roc_auc_score(true_vessel, pred_vessel)
     except Exception as e:
         print("Unable to calculate ROC AUC, continuous prediction scores required")
-    # Visualize results
+        auc_val = 0
+    return binary_segmentation, auc_val, vessel_clusters
+# Separate visualization function
+def optimized_visualize(img_x, img_y, binary_segmentation, auc_val, filename=None):
     plt.figure(figsize=(15, 5))
     # Original image
     plt.subplot(141)
@@ -272,6 +285,157 @@ def optimized_kmeans(img_x, img_y, n_clusters, top_k):
     plt.title("Overlay (Red=TP, Green=FP, Blue=FN)")
     plt.axis("off")
     plt.tight_layout()
-    plt.savefig(f"figures_test/binary_segmentation_top{top_k}_clusters.png", bbox_inches="tight")
+    if filename:
+        plt.savefig(filename, bbox_inches="tight")
     plt.show()
-    return binary_segmentation, auc_val, vessel_clusters
+
+
+# 6 Comparison
+def compare_kmeans_algorithms(X_all, Y_all, n_clusters, top_k):
+    classic_metrics = {'accuracy': [], 'sensitivity': [], 'specificity': [], 'f1': [], 'auc': []}
+    optimized_metrics = {'accuracy': [], 'sensitivity': [], 'specificity': [], 'f1': [], 'auc': []}
+    for i in range(len(X_all)):
+        # Classic KMeans
+        best_cluster, best_auc = kmeans(X_all[i], Y_all[i], n_clusters)
+        # Get predictions from classic KMeans
+        X = X_all[i].reshape(-1, 3)
+        main_mask = np.any(X != 0, axis=1)
+        X_main = X[main_mask]
+        kmeans_model = KMeans(n_clusters=n_clusters, random_state=0)
+        labels_main = kmeans_model.fit_predict(X_main)
+        labels = np.zeros(X.shape[0], dtype=int) - 1
+        labels[main_mask] = labels_main
+        labels = labels.reshape(X_all[i].shape[:2])
+        classic_pred = (labels == best_cluster).astype(np.int32).reshape(-1)
+        # Optimized KMeans
+        binary_segmentation, opt_auc, _ = optimized_kmeans(X_all[i], Y_all[i], n_clusters, top_k)
+        optimized_pred = binary_segmentation.reshape(-1)
+        # True values
+        true_vessel = (Y_all[i] > 0).astype(np.int32).reshape(-1)
+        # Calculate metrics for both algorithms
+        # Classic KMeans
+        classic_metrics['accuracy'].append(accuracy_score(true_vessel, classic_pred))
+        classic_metrics['sensitivity'].append(recall_score(true_vessel, classic_pred))
+        classic_metrics['specificity'].append(calculate_specificity(true_vessel, classic_pred))
+        classic_metrics['f1'].append(f1_score(true_vessel, classic_pred))
+        classic_metrics['auc'].append(best_auc)
+        # Optimized KMeans
+        optimized_metrics['accuracy'].append(accuracy_score(true_vessel, optimized_pred))
+        optimized_metrics['sensitivity'].append(recall_score(true_vessel, optimized_pred))
+        optimized_metrics['specificity'].append(calculate_specificity(true_vessel, optimized_pred))
+        optimized_metrics['f1'].append(f1_score(true_vessel, optimized_pred))
+        optimized_metrics['auc'].append(opt_auc)
+    # Calculate mean values
+    classic_means = {k: np.mean(v) for k, v in classic_metrics.items()}
+    optimized_means = {k: np.mean(v) for k, v in optimized_metrics.items()}
+    # Create and display comparison table
+    print("Performance Comparison: Classic KMeans vs. Optimized KMeans")
+    print("-" * 60)
+    print(f"{'Metric':<15} | {'Classic KMeans':<15} | {'Optimized KMeans':<15}")
+    print("-" * 60)
+    for metric in ['accuracy', 'sensitivity', 'specificity', 'f1', 'auc']:
+        print(f"{metric.capitalize():<15} | {classic_means[metric]:.4f}{' ' * 10} | {optimized_means[metric]:.4f}")
+    return classic_means, optimized_means
+# Calculate specificity
+def calculate_specificity(y_true, y_pred):
+    cm = confusion_matrix(y_true, y_pred)
+    tn = cm[0, 0]
+    fp = cm[0, 1]
+    specificity = tn / (tn + fp)
+    return specificity
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def direction_enhanced_kmeans(img_x, img_y, n_clusters, top_k):
+    # 计算梯度信息来获取方向性特征
+    from scipy import ndimage
+
+    # 计算x和y方向的梯度
+    grad_x = ndimage.sobel(img_x[:, :, 0], axis=1) + ndimage.sobel(img_x[:, :, 1], axis=1) + ndimage.sobel(
+        img_x[:, :, 2], axis=1)
+    grad_y = ndimage.sobel(img_x[:, :, 0], axis=0) + ndimage.sobel(img_x[:, :, 1], axis=0) + ndimage.sobel(
+        img_x[:, :, 2], axis=0)
+
+    # 计算梯度方向和强度
+    grad_magnitude = np.sqrt(grad_x ** 2 + grad_y ** 2)
+    grad_direction = np.arctan2(grad_y, grad_x)
+
+    # 将原始RGB特征与方向和强度特征结合
+    X_rgb = img_x.reshape(-1, 3)
+
+    # 为每个像素添加方向和强度特征
+    grad_magnitude_flat = grad_magnitude.reshape(-1, 1)
+    grad_direction_flat = grad_direction.reshape(-1, 1)
+
+    # 标准化新特征，避免它们主导聚类过程
+    grad_magnitude_flat = (grad_magnitude_flat - np.min(grad_magnitude_flat)) / (
+                np.max(grad_magnitude_flat) - np.min(grad_magnitude_flat) + 1e-10)
+
+    # 将新特征与RGB特征结合
+    X_enhanced = np.hstack(
+        (X_rgb, grad_magnitude_flat * 0.5, np.sin(grad_direction_flat) * 0.3, np.cos(grad_direction_flat) * 0.3))
+
+    # 创建非背景像素的掩码
+    main_mask = np.any(X_rgb != 0, axis=1)
+    X_main = X_enhanced[main_mask]
+
+    # 聚类
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0)
+    labels_main = kmeans.fit_predict(X_main)
+
+    # 重新构建标签数组
+    labels = np.zeros(X_rgb.shape[0], dtype=int) - 1
+    labels[main_mask] = labels_main
+    labels = labels.reshape(img_x.shape[:2])
+
+
+    # 合并顶部聚类
+    segmentation, vessel_clusters, scores = merge_top_clusters(labels, img_y, n_clusters, top_k)
+
+    true_vessel = (img_y > 0).astype(np.int32).reshape(-1)
+    pred_vessel = segmentation.reshape(-1)
+    try:
+        auc_val = roc_auc_score(true_vessel, pred_vessel)
+    except Exception as e:
+        print("Unable to calculate ROC AUC, continuous prediction scores required")
+        auc_val = 0
+
+    return segmentation, auc_val, vessel_clusters
