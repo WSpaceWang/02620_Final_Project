@@ -2,6 +2,7 @@ import os
 import glob
 import tifffile
 import numpy as np
+import pandas as pd
 from PIL import Image
 import matplotlib
 matplotlib.use("Qt5Agg")
@@ -18,7 +19,7 @@ def load_dataset(img_folder, mask_folder, manual_folder):
     mask_files = sorted(glob.glob(os.path.join(mask_folder, "*.gif")))
     manual_files = sorted(glob.glob(os.path.join(manual_folder, "*.gif")))
     # Ensure the number of files matches
-    assert len(img_files) == len(mask_files) == len(manual_files), "Number of files in folders doesn't match."
+    assert len(img_files) == len(mask_files) == len(manual_files), "Number of files in folders does not match."
     # Prepare dataset
     x_all = []
     y_all = []
@@ -49,9 +50,37 @@ def load_sample(img_path, mask_path, manual_path):
     return x, y
 
 
-# 1 KMeans Clustering
+# 1 Find the best n_clusters
+def find_best_n_clusters(X_all, Y_all, min_clusters, max_clusters):
+    auc_mean = pd.DataFrame(index=np.arange(min_clusters, max_clusters), columns=["n_clusters", "AUC_Mean"])
+    for n in np.arange(min_clusters, max_clusters):
+        auc = []
+        for i in np.arange(len(X_all)):
+            best_cluster, best_auc = kmeans(X_all[i], Y_all[i], n)
+            auc.append(best_auc)
+        auc_mean.loc[n, "n_clusters"] = n
+        auc_mean.loc[n, "AUC_Mean"] = np.mean(auc)
+    # Find the optimal number of clusters (with the highest mean AUC)
+    best_idx = auc_mean["AUC_Mean"].idxmax()
+    best_n_clusters = int(auc_mean.loc[best_idx, "n_clusters"])
+    best_auc_mean = auc_mean.loc[best_idx, "AUC_Mean"]
+    # Plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(auc_mean.index, auc_mean["AUC_Mean"], marker=".", linestyle="-")
+    plt.title("Mean AUC Values for Different Numbers of Clusters")
+    plt.xlabel("Number of Clusters")
+    plt.ylabel("Mean AUC")
+    plt.grid(True, linestyle="--", alpha=0.7)
+    plt.xticks(np.arange(min_clusters, max_clusters, 1))
+    plt.tight_layout()
+    plt.savefig("figures_test/1-1 Find the Best n_clusters.png", bbox_inches="tight")
+    plt.show()
+    return auc_mean, best_n_clusters, best_auc_mean
+
+
+# 2 KMeans Clustering
 # Clustering function
-def kmeans_clustering(img_x, img_y, n_clusters, width, height):
+def kmeans(img_x, img_y, n_clusters):
     # Reshape the image data to (584*565, 3) {All with shape (584, 565, 3)}
     X = img_x.reshape(-1, 3)
     # Create mask for non-background pixels (background pixels have RGB values of 0)
@@ -68,10 +97,7 @@ def kmeans_clustering(img_x, img_y, n_clusters, width, height):
     labels = labels.reshape(img_x.shape[:2])
     # Evaluate clustering results
     best_cluster, best_auc = evaluate_clusters(labels, img_y, n_clusters)
-    # Visualize clustering results
-    visualize_clustering(img_x, labels, labels_main, kmeans, n_clusters, width, height)
     return best_cluster, best_auc
-
 # Evaluate
 def evaluate_clusters(labels, img_y, n_clusters):
     best_auc = 0
@@ -100,17 +126,25 @@ def evaluate_clusters(labels, img_y, n_clusters):
         except Exception as e:
             print("Unable to calculate ROC AUC, continuous prediction scores required")
             auc_val = 0  # Set default value to avoid undefined error
-        print("")
         if auc_val > best_auc:
             best_auc = auc_val
             best_cluster = i
-    print(f"Best matching cluster: {best_cluster}")
-    print(f"Best AUC value: {best_auc:.4f}")
     return best_cluster, best_auc
 
-# Visualization
-def visualize_clustering(img_x, labels, labels_main, kmeans, n_clusters, width, height):
-    plt.figure(figsize=(width, height))
+
+# 3 Visualization
+# Visualize single image
+def visualize_single(img_x, n_clusters):
+    X = img_x.reshape(-1, 3)
+    main_mask = np.any(X != 0, axis=1)
+    X_main = X[main_mask]
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0)
+    labels_main = kmeans.fit_predict(X_main)
+    labels = np.zeros(X.shape[0], dtype=int) - 1
+    labels[main_mask] = labels_main
+    labels = labels.reshape(img_x.shape[:2])
+    # Plot
+    plt.figure(figsize=(6, 8.5))
     # Original Image
     plt.subplot(221)
     plt.imshow(img_x)
@@ -119,8 +153,9 @@ def visualize_clustering(img_x, labels, labels_main, kmeans, n_clusters, width, 
     # Clustered Image (Center Color)
     clustered_img_x = np.zeros_like(img_x)
     for i in range(n_clusters):
-        mask = (labels == i).reshape(-1)
-        clustered_img_x.reshape(-1, 3)[mask] = kmeans.cluster_centers_[i]
+        mask = (labels == i)
+        for c in range(3):
+            clustered_img_x[:, :, c][mask] = kmeans.cluster_centers_[i][c]
     plt.subplot(222)
     plt.imshow(np.clip(clustered_img_x, 0, 1))  # Ensure values are in [0, 1] range
     plt.title("Clustered Image (Center Color)")
@@ -133,7 +168,110 @@ def visualize_clustering(img_x, labels, labels_main, kmeans, n_clusters, width, 
     plt.axis("off")
     plt.tight_layout()
     plt.show()
-    # Print cluster sizes
-    # unique_labels, counts = np.unique(labels_main, return_counts=True)
-    # for label, count in zip(unique_labels, counts):
-    #     print(f"Cluster {label} contains {count} pixels")
+# Visualize all image
+def visualize_all(X_all, n_clusters):
+    fig, axes = plt.subplots(4, 5, figsize=(18, 16))
+    axes = axes.flatten()
+    for i in np.arange(len(X_all)):
+        ax = axes[i]
+        X = X_all[i].reshape(-1, 3)
+        main_mask = np.any(X != 0, axis=1)
+        X_main = X[main_mask]
+        kmeans = KMeans(n_clusters=n_clusters, random_state=0)
+        labels_main = kmeans.fit_predict(X_main)
+        labels = np.zeros(X.shape[0], dtype=int) - 1
+        labels[main_mask] = labels_main
+        labels = labels.reshape(X_all[i].shape[:2])
+        # Plot
+        colormap = ax.imshow(labels, cmap="viridis")
+        # ax.set_title(f"Image {i+1}")
+        fig.colorbar(colormap, ax=ax, fraction=0.046, pad=0.04)
+        ax.axis("off")
+    fig.suptitle(f"Clustered Images (n_clusters={n_clusters})", fontsize=16)
+    plt.tight_layout()
+    plt.show()
+
+
+# 4 Optimized KMeans Clustering
+# Identify the most likely vessel clusters
+def identify_vessel_clusters(labels, ground_truth, n_clusters, top_k):
+    true_vessel = (ground_truth > 0).astype(np.int32).reshape(-1)
+    scores = []
+    for i in range(n_clusters):
+        pred_vessel = (labels == i).astype(np.int32).reshape(-1)
+        # Use the ROC AUC score to evaluate the cluster
+        try:
+            score = roc_auc_score(true_vessel, pred_vessel)
+        except:
+            score = 0
+        scores.append((i, score))
+    scores.sort(key=lambda x: x[1], reverse=True)
+    # Return the top_k clusters with the highest scores
+    vessel_clusters = [cluster for cluster, _ in scores[:top_k]]
+    return vessel_clusters, scores
+# Merge the top clusters
+def merge_top_clusters(labels, ground_truth, n_clusters, top_k):
+    vessel_clusters, scores = identify_vessel_clusters(labels, ground_truth, n_clusters, top_k)
+    # Create a mask for the identified vessel clusters
+    vessel_mask = np.zeros_like(labels, dtype=bool)
+    for cluster in vessel_clusters:
+        vessel_mask |= (labels == cluster)
+    # Create a segmentation mask
+    segmentation = np.zeros_like(labels)
+    segmentation[vessel_mask] = 1
+    return segmentation, vessel_clusters, scores
+# The optimized KMeans clustering function
+def optimized_kmeans(img_x, img_y, n_clusters, top_k):
+    X = img_x.reshape(-1, 3)
+    main_mask = np.any(X != 0, axis=1)
+    X_main = X[main_mask]
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0)
+    labels_main = kmeans.fit_predict(X_main)
+    labels = np.zeros(X.shape[0], dtype=int) - 1
+    labels[main_mask] = labels_main
+    labels = labels.reshape(img_x.shape[:2])
+    # Merge the top clusters
+    segmentation, vessel_clusters, scores = merge_top_clusters(labels, img_y, n_clusters, top_k)
+    # Create a binary segmentation mask
+    binary_segmentation = np.zeros_like(labels)
+    for cluster in vessel_clusters:
+        binary_segmentation[labels == cluster] = 1
+    true_vessel = (img_y > 0).astype(np.int32).reshape(-1)
+    pred_vessel = binary_segmentation.reshape(-1)
+    try:
+        auc_val = roc_auc_score(true_vessel, pred_vessel)
+    except Exception as e:
+        print("Unable to calculate ROC AUC, continuous prediction scores required")
+    # Visualize results
+    plt.figure(figsize=(15, 5))
+    # Original image
+    plt.subplot(141)
+    plt.imshow(img_x)
+    plt.title("Original Image")
+    plt.axis("off")
+    # Ground truth vessel annotation
+    plt.subplot(142)
+    plt.imshow(img_y, cmap='gray')
+    plt.title("Ground Truth Vessels")
+    plt.axis("off")
+    # Predicted vessel segmentation
+    plt.subplot(143)
+    plt.imshow(binary_segmentation, cmap='gray')
+    plt.title(f"Predicted Vessels (AUC={auc_val:.4f})")
+    plt.axis("off")
+    # Overlay display (red for true positives, green for false positives, blue for false negatives)
+    overlay = np.zeros((*binary_segmentation.shape, 3))
+    # True Positives (TP): Red
+    overlay[..., 0] = np.logical_and(binary_segmentation == 1, img_y > 0)
+    # False Positives (FP): Green
+    overlay[..., 1] = np.logical_and(binary_segmentation == 1, img_y == 0)
+    # False Negatives (FN): Blue
+    overlay[..., 2] = np.logical_and(binary_segmentation == 0, img_y > 0)
+    plt.subplot(144)
+    plt.imshow(overlay)
+    plt.title("Overlay (Red=TP, Green=FP, Blue=FN)")
+    plt.axis("off")
+    plt.tight_layout()
+    plt.savefig(f"figures_test/binary_segmentation_top{top_k}_clusters.png", bbox_inches="tight")
+    plt.show()
+    return binary_segmentation, auc_val, vessel_clusters

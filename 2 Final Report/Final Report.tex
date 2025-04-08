@@ -1,0 +1,54 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{titling}
+\usepackage{amsmath}
+\usepackage{amssymb} 
+\usepackage{graphicx} % For image
+\usepackage{float} % For image H option
+\usepackage{enumitem} % For enumerate
+\usepackage{bm} % For bold math symbols
+\usepackage[margin=1in]{geometry}
+
+\begin{document}
+\title{\textbf{Segmentation of Vessels in Retinal Images}}
+\author{Team Members: Shiyu Wang, Enhao He, Jiacheng Ma, Joe Wang}
+\date{}
+\setlength{\droptitle}{-2.75cm}
+\maketitle
+\vspace{-2cm}
+
+
+\section{Methods}
+\subsection{K-means Clustering}
+\subsubsection{Find the Best ``n_clusters''}
+Try to decide the best numbers of clusters by comparing the mean of the AUC value of the 20 figures. 
+
+"Figures/1-1 Find the Best n_clusters.png"
+
+The line is descending. At least 2. But 2 doesn't perform well. 
+
+"Figures/1-2 2 Clusters.png"
+
+Then we increase the n_clusters. 
+
+"Figures/1-2 4 Clusters.png"
+"Figures/1-2 6 Clusters.png"
+
+We finally choose 6 because of its performance, but there still are some problems: the vessels' pixel are contained in many different clusters. 
+
+Here is a special case: 
+
+"Figures/1-3 6 Clusters.png"
+
+\subsubsection{
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
