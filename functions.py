@@ -3,13 +3,12 @@ import glob
 import tifffile
 import numpy as np
 import pandas as pd
-from PIL import Image
-from scipy import ndimage
 import matplotlib
 matplotlib.use("Qt5Agg")
+from scipy import ndimage
 import matplotlib.pyplot as plt
+from PIL import Image, ImageEnhance
 from sklearn.metrics import confusion_matrix, accuracy_score, recall_score, precision_score, f1_score, roc_auc_score
-from PIL import Image, ImageEnhance, ImageOps
 
 
 # 0 Load data
