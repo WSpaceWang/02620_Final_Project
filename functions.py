@@ -4,16 +4,17 @@ import tifffile
 import numpy as np
 import pandas as pd
 from PIL import Image
+from scipy import ndimage
 import matplotlib
 matplotlib.use("Qt5Agg")
 import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
 from sklearn.metrics import confusion_matrix, accuracy_score, recall_score, precision_score, f1_score, roc_auc_score
+from PIL import Image, ImageEnhance, ImageOps
 
 
 # 0 Load data
 # Load full dataset
-def load_dataset(img_folder, mask_folder, manual_folder):
+def load_dataset(img_folder, mask_folder, manual_folder, augment=False):
     # Get all file paths
     img_files = sorted(glob.glob(os.path.join(img_folder, "*.tif")))
     mask_files = sorted(glob.glob(os.path.join(mask_folder, "*.gif")))
@@ -24,14 +25,21 @@ def load_dataset(img_folder, mask_folder, manual_folder):
     x_all = []
     y_all = []
     for img_f, mask_f, manual_f in zip(img_files, mask_files, manual_files):
-        x, y = load_sample(img_f, mask_f, manual_f)
+        x, y = load_sample(img_f, mask_f, manual_f, augment)
         x_all.append(x)
         y_all.append(y)
     return np.array(x_all), np.array(y_all)
 # Load single sample
-def load_sample(img_path, mask_path, manual_path):
+def load_sample(img_path, mask_path, manual_path, augment):
     # Load all components
     img = tifffile.imread(img_path)
+    if augment:
+        # Convert the numpy array to a PIL.Image object
+        img_pil = Image.fromarray(img.astype("uint8"))
+        # Enhance color, brightness, contrast.
+        img_pil = augment_color(img_pil, factor_color=1.5, factor_brightness=1.2, factor_contrast=1.3)
+        # Convert back to numpy array
+        img = np.array(img_pil)
     mask = np.array(Image.open(mask_path))
     manual = np.array(Image.open(manual_path))
     # Apply mask to image (optional)
@@ -48,16 +56,56 @@ def load_sample(img_path, mask_path, manual_path):
     x = x / 255.0
     y = y / 255.0
     return x, y
+# Image Augmentation
+def augment_color(image, factor_color=1.5, factor_brightness=1.2, factor_contrast=1.3):
+    enhancer_color = ImageEnhance.Color(image)
+    image = enhancer_color.enhance(factor_color)
+    enhancer_brightness = ImageEnhance.Brightness(image)
+    image = enhancer_brightness.enhance(factor_brightness)
+    enhancer_contrast = ImageEnhance.Contrast(image)
+    image = enhancer_contrast.enhance(factor_contrast)
+    return image
 
 
-
-
-
-
-
-
-
-
+# 1 KMeans Core (Manual Implementation)
+def kmeans_core(x, k_clusters, max_iter=100, tol=1e-4, random_state=0):
+    # Set random seed
+    if random_state is not None:
+        np.random.seed(random_state)
+    # Randomly initialize cluster centers
+    idx = np.random.choice(len(x), k_clusters, replace=False)
+    center = x[idx].copy()
+    prev_obj = float("inf")
+    obj_value = []
+    label = None
+    for i in range(max_iter):
+        # Calculate the Euclidean distance between each point and each center
+        distances = np.linalg.norm(x[:, np.newaxis] - center, axis=2)
+        # Assign each point to the closest center
+        label = np.argmin(distances, axis=1)
+        # Update the centers
+        new_centers = np.zeros_like(center)
+        for j in range(k_clusters):
+            cluster_points = x[label == j]
+            if len(cluster_points) > 0:
+                new_centers[j] = cluster_points.mean(axis=0)
+            else:
+                # 如果簇为空，保留旧中心点
+                new_centers[j] = center[j]
+        # Calculate the objective function value
+        obj = 0
+        for k in range(k_clusters):
+            cluster_points = x[label == k]
+            if len(cluster_points) > 0:
+                # Calculate the sum of squared distances
+                obj += np.sum(np.linalg.norm(cluster_points - center[k], axis=1) ** 2)
+        obj_value.append(obj)
+        # Check for convergence
+        if abs(prev_obj - obj) < tol:
+            break
+        prev_obj = obj
+        center = new_centers
+    return label, center, obj_value
 
 
 # 2 Find the best n_clusters
@@ -98,8 +146,7 @@ def kmeans(img_x, img_y, n_clusters):
     main_mask = np.any(X != 0, axis=1)
     X_main = X[main_mask]  # Keep only non-background pixels
     # Clustering
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0)
-    labels_main = kmeans.fit_predict(X_main)
+    labels_main, cluster_centers, _ = kmeans_core(X_main, n_clusters, random_state=0)
     # Rebuild complete label array (including background)
     labels = np.zeros(X.shape[0], dtype=int) - 1  # -1 for background
     labels[main_mask] = labels_main
@@ -148,8 +195,7 @@ def visualize_single(img_x, n_clusters):
     X = img_x.reshape(-1, 3)
     main_mask = np.any(X != 0, axis=1)
     X_main = X[main_mask]
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0)
-    labels_main = kmeans.fit_predict(X_main)
+    labels_main, cluster_centers, _ = kmeans_core(X_main, n_clusters, random_state=0)
     labels = np.zeros(X.shape[0], dtype=int) - 1
     labels[main_mask] = labels_main
     labels = labels.reshape(img_x.shape[:2])
@@ -165,7 +211,7 @@ def visualize_single(img_x, n_clusters):
     for i in range(n_clusters):
         mask = (labels == i)
         for c in range(3):
-            clustered_img_x[:, :, c][mask] = kmeans.cluster_centers_[i][c]
+            clustered_img_x[:, :, c][mask] = cluster_centers[i][c]
     plt.subplot(222)
     plt.imshow(np.clip(clustered_img_x, 0, 1))  # Ensure values are in [0, 1] range
     plt.title("Clustered Image (Center Color)")
@@ -187,8 +233,7 @@ def visualize_all(X_all, n_clusters):
         X = X_all[i].reshape(-1, 3)
         main_mask = np.any(X != 0, axis=1)
         X_main = X[main_mask]
-        kmeans = KMeans(n_clusters=n_clusters, random_state=0)
-        labels_main = kmeans.fit_predict(X_main)
+        labels_main, cluster_centers, _ = kmeans_core(X_main, n_clusters, random_state=0)
         labels = np.zeros(X.shape[0], dtype=int) - 1
         labels[main_mask] = labels_main
         labels = labels.reshape(X_all[i].shape[:2])
@@ -235,8 +280,7 @@ def optimized_kmeans(img_x, img_y, n_clusters, top_k):
     X = img_x.reshape(-1, 3)
     main_mask = np.any(X != 0, axis=1)
     X_main = X[main_mask]
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0)
-    labels_main = kmeans.fit_predict(X_main)
+    labels_main, cluster_centers, _ = kmeans_core(X_main, n_clusters, random_state=0)
     labels = np.zeros(X.shape[0], dtype=int) - 1
     labels[main_mask] = labels_main
     labels = labels.reshape(img_x.shape[:2])
@@ -255,7 +299,7 @@ def optimized_kmeans(img_x, img_y, n_clusters, top_k):
         auc_val = 0
     return binary_segmentation, auc_val, vessel_clusters
 # Separate visualization function
-def optimized_visualize(img_x, img_y, binary_segmentation, auc_val, filename=None):
+def optimized_visualize(img_x, img_y, binary_segmentation, auc_val):
     plt.figure(figsize=(15, 5))
     # Original image
     plt.subplot(141)
@@ -264,12 +308,12 @@ def optimized_visualize(img_x, img_y, binary_segmentation, auc_val, filename=Non
     plt.axis("off")
     # Ground truth vessel annotation
     plt.subplot(142)
-    plt.imshow(img_y, cmap='gray')
+    plt.imshow(img_y, cmap="gray")
     plt.title("Ground Truth Vessels")
     plt.axis("off")
     # Predicted vessel segmentation
     plt.subplot(143)
-    plt.imshow(binary_segmentation, cmap='gray')
+    plt.imshow(binary_segmentation, cmap="gray")
     plt.title(f"Predicted Vessels (AUC={auc_val:.4f})")
     plt.axis("off")
     # Overlay display (red for true positives, green for false positives, blue for false negatives)
@@ -285,15 +329,13 @@ def optimized_visualize(img_x, img_y, binary_segmentation, auc_val, filename=Non
     plt.title("Overlay (Red=TP, Green=FP, Blue=FN)")
     plt.axis("off")
     plt.tight_layout()
-    if filename:
-        plt.savefig(filename, bbox_inches="tight")
     plt.show()
 
 
 # 6 Comparison
 def compare_kmeans_algorithms(X_all, Y_all, n_clusters, top_k):
-    classic_metrics = {'accuracy': [], 'sensitivity': [], 'specificity': [], 'f1': [], 'auc': []}
-    optimized_metrics = {'accuracy': [], 'sensitivity': [], 'specificity': [], 'f1': [], 'auc': []}
+    classic_metrics = {"accuracy": [], "sensitivity": [], "specificity": [], "f1": [], "auc": []}
+    optimized_metrics = {"accuracy": [], "sensitivity": [], "specificity": [], "f1": [], "auc": []}
     for i in range(len(X_all)):
         # Classic KMeans
         best_cluster, best_auc = kmeans(X_all[i], Y_all[i], n_clusters)
@@ -301,8 +343,7 @@ def compare_kmeans_algorithms(X_all, Y_all, n_clusters, top_k):
         X = X_all[i].reshape(-1, 3)
         main_mask = np.any(X != 0, axis=1)
         X_main = X[main_mask]
-        kmeans_model = KMeans(n_clusters=n_clusters, random_state=0)
-        labels_main = kmeans_model.fit_predict(X_main)
+        labels_main, cluster_centers, _ = kmeans_core(X_main, n_clusters, random_state=0)
         labels = np.zeros(X.shape[0], dtype=int) - 1
         labels[main_mask] = labels_main
         labels = labels.reshape(X_all[i].shape[:2])
@@ -314,27 +355,27 @@ def compare_kmeans_algorithms(X_all, Y_all, n_clusters, top_k):
         true_vessel = (Y_all[i] > 0).astype(np.int32).reshape(-1)
         # Calculate metrics for both algorithms
         # Classic KMeans
-        classic_metrics['accuracy'].append(accuracy_score(true_vessel, classic_pred))
-        classic_metrics['sensitivity'].append(recall_score(true_vessel, classic_pred))
-        classic_metrics['specificity'].append(calculate_specificity(true_vessel, classic_pred))
-        classic_metrics['f1'].append(f1_score(true_vessel, classic_pred))
-        classic_metrics['auc'].append(best_auc)
+        classic_metrics["accuracy"].append(accuracy_score(true_vessel, classic_pred))
+        classic_metrics["sensitivity"].append(recall_score(true_vessel, classic_pred))
+        classic_metrics["specificity"].append(calculate_specificity(true_vessel, classic_pred))
+        classic_metrics["f1"].append(f1_score(true_vessel, classic_pred))
+        classic_metrics["auc"].append(best_auc)
         # Optimized KMeans
-        optimized_metrics['accuracy'].append(accuracy_score(true_vessel, optimized_pred))
-        optimized_metrics['sensitivity'].append(recall_score(true_vessel, optimized_pred))
-        optimized_metrics['specificity'].append(calculate_specificity(true_vessel, optimized_pred))
-        optimized_metrics['f1'].append(f1_score(true_vessel, optimized_pred))
-        optimized_metrics['auc'].append(opt_auc)
+        optimized_metrics["accuracy"].append(accuracy_score(true_vessel, optimized_pred))
+        optimized_metrics["sensitivity"].append(recall_score(true_vessel, optimized_pred))
+        optimized_metrics["specificity"].append(calculate_specificity(true_vessel, optimized_pred))
+        optimized_metrics["f1"].append(f1_score(true_vessel, optimized_pred))
+        optimized_metrics["auc"].append(opt_auc)
     # Calculate mean values
     classic_means = {k: np.mean(v) for k, v in classic_metrics.items()}
     optimized_means = {k: np.mean(v) for k, v in optimized_metrics.items()}
     # Create and display comparison table
     print("Performance Comparison: Classic KMeans vs. Optimized KMeans")
     print("-" * 60)
-    print(f"{'Metric':<15} | {'Classic KMeans':<15} | {'Optimized KMeans':<15}")
+    print(f"{"Metric":<15} | {"Classic KMeans":<15} | {"Optimized KMeans":<15}")
     print("-" * 60)
-    for metric in ['accuracy', 'sensitivity', 'specificity', 'f1', 'auc']:
-        print(f"{metric.capitalize():<15} | {classic_means[metric]:.4f}{' ' * 10} | {optimized_means[metric]:.4f}")
+    for metric in ["accuracy", "sensitivity", "specificity", "f1", "auc"]:
+        print(f"{metric.capitalize():<15} | {classic_means[metric]:.4f}{" " * 10} | {optimized_means[metric]:.4f}")
     return classic_means, optimized_means
 # Calculate specificity
 def calculate_specificity(y_true, y_pred):
@@ -345,91 +386,35 @@ def calculate_specificity(y_true, y_pred):
     return specificity
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# 7 Direction-enhanced KMeans Clustering
 def direction_enhanced_kmeans(img_x, img_y, n_clusters, top_k):
-    # 计算梯度信息来获取方向性特征
-    from scipy import ndimage
-
-    # 计算x和y方向的梯度
+    # Calculate gradients in x and y directions
     grad_x = ndimage.sobel(img_x[:, :, 0], axis=1) + ndimage.sobel(img_x[:, :, 1], axis=1) + ndimage.sobel(
         img_x[:, :, 2], axis=1)
     grad_y = ndimage.sobel(img_x[:, :, 0], axis=0) + ndimage.sobel(img_x[:, :, 1], axis=0) + ndimage.sobel(
         img_x[:, :, 2], axis=0)
-
-    # 计算梯度方向和强度
+    # Calculate gradient direction and magnitude
     grad_magnitude = np.sqrt(grad_x ** 2 + grad_y ** 2)
     grad_direction = np.arctan2(grad_y, grad_x)
-
-    # 将原始RGB特征与方向和强度特征结合
+    # Combine original RGB features with direction and magnitude features
     X_rgb = img_x.reshape(-1, 3)
-
-    # 为每个像素添加方向和强度特征
+    # Add direction and magnitude features for each pixel
     grad_magnitude_flat = grad_magnitude.reshape(-1, 1)
     grad_direction_flat = grad_direction.reshape(-1, 1)
-
-    # 标准化新特征，避免它们主导聚类过程
+    # Normalization
     grad_magnitude_flat = (grad_magnitude_flat - np.min(grad_magnitude_flat)) / (
                 np.max(grad_magnitude_flat) - np.min(grad_magnitude_flat) + 1e-10)
-
-    # 将新特征与RGB特征结合
     X_enhanced = np.hstack(
         (X_rgb, grad_magnitude_flat * 0.5, np.sin(grad_direction_flat) * 0.3, np.cos(grad_direction_flat) * 0.3))
-
-    # 创建非背景像素的掩码
+    # Mask
     main_mask = np.any(X_rgb != 0, axis=1)
     X_main = X_enhanced[main_mask]
-
-    # 聚类
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0)
-    labels_main = kmeans.fit_predict(X_main)
-
-    # 重新构建标签数组
+    labels_main, cluster_centers, _ = kmeans_core(X_main, n_clusters, random_state=0)
     labels = np.zeros(X_rgb.shape[0], dtype=int) - 1
     labels[main_mask] = labels_main
     labels = labels.reshape(img_x.shape[:2])
-
-
-    # 合并顶部聚类
+    # Merge
     segmentation, vessel_clusters, scores = merge_top_clusters(labels, img_y, n_clusters, top_k)
-
     true_vessel = (img_y > 0).astype(np.int32).reshape(-1)
     pred_vessel = segmentation.reshape(-1)
     try:
@@ -437,5 +422,4 @@ def direction_enhanced_kmeans(img_x, img_y, n_clusters, top_k):
     except Exception as e:
         print("Unable to calculate ROC AUC, continuous prediction scores required")
         auc_val = 0
-
     return segmentation, auc_val, vessel_clusters
