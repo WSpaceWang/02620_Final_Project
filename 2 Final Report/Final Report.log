@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.7)  10 APR 2025 01:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.7)  10 APR 2025 10:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -289,11 +289,11 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
 (Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 39.
-<Figures/1-1 Find the Best n_clusters.png, id=1, 714.7503pt x 426.393pt>
+<Figures/1-1 Find the Best n_clusters.png, id=1, 722.7pt x 433.62pt>
 File: Figures/1-1 Find the Best n_clusters.png Graphic file (type png)
 <use Figures/1-1 Find the Best n_clusters.png>
 Package pdftex.def Info: Figures/1-1 Find the Best n_clusters.png  used on input line 48.
-(pdftex.def)             Requested size: 357.37428pt x 213.19597pt.
+(pdftex.def)             Requested size: 361.3491pt x 216.80946pt.
 
 
 [1
@@ -320,65 +320,65 @@ Package pdftex.def Info: Figures/1-2 10 Clusters.png  used on input line 73.
 
 
 [3 <./Figures/1-2 2 Clusters.png> <./Figures/1-2 6 Clusters.png>]
-<Figures/3 Optimized 1st.png, id=24, 1084.05pt x 361.35pt>
+<Figures/3 Optimized 1st.png, id=24, 1156.32pt x 361.35pt>
 File: Figures/3 Optimized 1st.png Graphic file (type png)
 <use Figures/3 Optimized 1st.png>
 Package pdftex.def Info: Figures/3 Optimized 1st.png  used on input line 94.
-(pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
-<Figures/3 Optimized 2nd.png, id=25, 1084.05pt x 361.35pt>
+(pdftex.def)             Requested size: 404.71806pt x 126.4744pt.
+<Figures/3 Optimized 2nd.png, id=25, 1156.32pt x 361.35pt>
 File: Figures/3 Optimized 2nd.png Graphic file (type png)
 <use Figures/3 Optimized 2nd.png>
 Package pdftex.def Info: Figures/3 Optimized 2nd.png  used on input line 101.
-(pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
-<Figures/3 Optimized 3rd.png, id=26, 1084.05pt x 361.35pt>
+(pdftex.def)             Requested size: 404.71806pt x 126.4744pt.
+<Figures/3 Optimized 3rd.png, id=26, 1156.32pt x 361.35pt>
 File: Figures/3 Optimized 3rd.png Graphic file (type png)
 <use Figures/3 Optimized 3rd.png>
 Package pdftex.def Info: Figures/3 Optimized 3rd.png  used on input line 108.
-(pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
+(pdftex.def)             Requested size: 404.71806pt x 126.4744pt.
 
 
 [4 <./Figures/1-2 10 Clusters.png>]
-<Figures/4 Optimized 1st.png, id=33, 1084.05pt x 361.35pt>
+<Figures/4 Optimized 1st.png, id=33, 1156.32pt x 361.35pt>
 File: Figures/4 Optimized 1st.png Graphic file (type png)
 <use Figures/4 Optimized 1st.png>
 Package pdftex.def Info: Figures/4 Optimized 1st.png  used on input line 125.
-(pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
-<Figures/4 Optimized 2nd.png, id=34, 1084.05pt x 361.35pt>
+(pdftex.def)             Requested size: 404.71806pt x 126.4744pt.
+<Figures/4 Optimized 2nd.png, id=34, 1156.32pt x 361.35pt>
 File: Figures/4 Optimized 2nd.png Graphic file (type png)
 <use Figures/4 Optimized 2nd.png>
 Package pdftex.def Info: Figures/4 Optimized 2nd.png  used on input line 132.
-(pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
-<Figures/4 Optimized 3rd.png, id=35, 1084.05pt x 361.35pt>
+(pdftex.def)             Requested size: 404.71806pt x 126.4744pt.
+<Figures/4 Optimized 3rd.png, id=35, 1156.32pt x 361.35pt>
 File: Figures/4 Optimized 3rd.png Graphic file (type png)
 <use Figures/4 Optimized 3rd.png>
 Package pdftex.def Info: Figures/4 Optimized 3rd.png  used on input line 139.
-(pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
+(pdftex.def)             Requested size: 404.71806pt x 126.4744pt.
 
 
 [5 <./Figures/3 Optimized 1st.png> <./Figures/3 Optimized 2nd.png> <./Figures/3 Optimized 3rd.png>]
-<Figures/5 Directed (Merge 3 Clusters).png, id=43, 1084.05pt x 361.35pt>
+<Figures/5 Directed (Merge 3 Clusters).png, id=43, 1156.32pt x 361.35pt>
 File: Figures/5 Directed (Merge 3 Clusters).png Graphic file (type png)
 <use Figures/5 Directed (Merge 3 Clusters).png>
 Package pdftex.def Info: Figures/5 Directed (Merge 3 Clusters).png  used on input line 156.
-(pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
-<Figures/5 Directed (Merge 5 Clusters).png, id=44, 1084.05pt x 361.35pt>
+(pdftex.def)             Requested size: 404.71806pt x 126.4744pt.
+<Figures/5 Directed (Merge 5 Clusters).png, id=44, 1156.32pt x 361.35pt>
 File: Figures/5 Directed (Merge 5 Clusters).png Graphic file (type png)
 <use Figures/5 Directed (Merge 5 Clusters).png>
 Package pdftex.def Info: Figures/5 Directed (Merge 5 Clusters).png  used on input line 163.
-(pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
+(pdftex.def)             Requested size: 404.71806pt x 126.4744pt.
 
 
 [6 <./Figures/4 Optimized 1st.png> <./Figures/4 Optimized 2nd.png> <./Figures/4 Optimized 3rd.png>]
-<Figures/6 Directed (Merge 3 Clusters).png, id=51, 1084.05pt x 361.35pt>
+<Figures/6 Directed (Merge 3 Clusters).png, id=51, 1156.32pt x 361.35pt>
 File: Figures/6 Directed (Merge 3 Clusters).png Graphic file (type png)
 <use Figures/6 Directed (Merge 3 Clusters).png>
 Package pdftex.def Info: Figures/6 Directed (Merge 3 Clusters).png  used on input line 178.
-(pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
-<Figures/6 Directed (Merge 5 Clusters).png, id=52, 1084.05pt x 361.35pt>
+(pdftex.def)             Requested size: 404.71806pt x 126.4744pt.
+<Figures/6 Directed (Merge 5 Clusters).png, id=52, 1156.32pt x 361.35pt>
 File: Figures/6 Directed (Merge 5 Clusters).png Graphic file (type png)
 <use Figures/6 Directed (Merge 5 Clusters).png>
 Package pdftex.def Info: Figures/6 Directed (Merge 5 Clusters).png  used on input line 185.
-(pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
+(pdftex.def)             Requested size: 404.71806pt x 126.4744pt.
 
 
 [7 <./Figures/5 Directed (Merge 3 Clusters).png> <./Figures/5 Directed (Merge 5 Clusters).png>]
@@ -400,7 +400,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  67i,11n,77p,831b,533s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on "Final Report.pdf" (9 pages, 7470220 bytes).
+Output written on "Final Report.pdf" (9 pages, 7862471 bytes).
 PDF statistics:
  99 PDF objects out of 1000 (max. 8388607)
  45 compressed objects within 1 object stream
