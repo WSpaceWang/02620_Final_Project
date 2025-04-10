@@ -21,10 +21,10 @@
 
 
 \section{Introduction}
-% Retinal vessel segmentation plays a critical role in the early diagnosis and treatment of various ocular diseases such as diabetic retinopathy and glaucoma. Optical characteristics such as the width, tortuosity, and overall geometry of retinal vessels can provide essential diagnostic information; however, the segmentation task itself is challenging due to vessels' complex structure, low contrast with the background, and heterogeneous illumination conditions across images. In this project, the DRIVE (Digital Retinal Images for Vessel Extraction) dataset is employed to study classical machine learning methods for vessel segmentation. In particular, we focus on K-Means clustering and its optimized variants, incorporating image augmentation and gradient-based enhancements to improve segmentation accuracy.
+% Retinal vessel segmentation plays a critical role in the early diagnosis and treatment of various ocular diseases such as diabetic retinopathy and glaucoma. Optical characteristics such as the width, tortuosity, and overall geometry of retinal vessels can provide essential diagnostic information; however, the segmentation task itself is challenging due to vessels' complex structure, low contrast with the background, and heterogeneous illumination conditions across images. In this project, the DRIVE (Digital Retinal Images for Vessel Extraction) dataset is employed to study classical machine learning methods for vessel segmentation. In particular, we focus on K-means clustering and its optimized variants, incorporating image augmentation and gradient-based enhancements to improve segmentation accuracy.
 
 \section{Related Work}
-% Traditionally, retinal vessel segmentation was performed manually by ophthalmologists, a process that is both time-consuming and subjective. Recent developments in deep learning have led to highly accurate automated methods utilizing encoder-decoder frameworks, attention mechanisms, and transformer-based models. Despite impressive performances, these methods often require extensive computational resources and large annotated datasets. In contrast, our research revisits classical machine learning approaches—specifically K-Means clustering—and proposes several optimizations to improve its effectiveness in retinal vessel segmentation.
+% Traditionally, retinal vessel segmentation was performed manually by ophthalmologists, a process that is both time-consuming and subjective. Recent developments in deep learning have led to highly accurate automated methods utilizing encoder-decoder frameworks, attention mechanisms, and transformer-based models. Despite impressive performances, these methods often require extensive computational resources and large annotated datasets. In contrast, our research revisits classical machine learning approaches—specifically K-means clustering—and proposes several optimizations to improve its effectiveness in retinal vessel segmentation.
 
 \section{Methods}
 % The overall methodology is implemented in \texttt{python} and consists of multiple stages including data loading, preprocessing, clustering, optimization, and evaluation.
@@ -34,7 +34,7 @@ The DRIVE dataset is loaded by reading the retinal images, manually segmented ve
 Preprocessing part mainly focuses on the \textbf{Image Augmentation}. We enhance images using adjustments to color, brightness, and contrast (implemented in \texttt{augment\_color}) to mitigate uneven illumination and improve vessel feature clarity. \\
 Besides, we also remove the background from the original image to focus on the non-background pixels by using the background mask in the dataset. 
 \subsection{K-means Clustering}
-K-Means clustering is applied to segment the retinal images based on their RGB values. However, this approach introduces several challenges:
+K-means clustering is applied to segment the retinal images based on their RGB values. However, this approach introduces several challenges:
 \begin{itemize}
     \item \textbf{Determining the Optimal Cluster Number (\texttt{n\_clusters})}: Choosing too few clusters may lead to the merging of vessel pixels with surrounding tissue, whereas an excessive number of clusters can fragment vessels, causing a discontinuous representation of the blood vessels.
     \item \textbf{Variations in Illumination and Noise}: Differences in image illumination and inherent noise can further complicate the segmentation task, making it challenging to distinguish between vessel and non-vessel regions without additional preprocessing (such as image augmentation techniques).
@@ -77,12 +77,12 @@ Then, we try to make a further decision through visualizing the segmentation res
 \end{figure}
 \noindent
 There are much clearer blood vessel shapes can be observed with the increase of cluster number. However, the vessel pixels are fragmented into multiple clusters. Thus, the AUC value for a single cluster in each image is reduced and not sufficient to evaluate the segmentation performance. \\
-Therefore, we decided to set \texttt{n\_clusters} = 10 as an optimal compromise with an \textbf{optimized K-Means algorithm}, which can handle the merging of clusters and improve the segmentation performance. \\
+Therefore, we decided to set \texttt{n\_clusters} = 10 as an optimal compromise with an \textbf{optimized K-means algorithm}, which can handle the merging of clusters and improve the segmentation performance. \\
 To match the biological explanation at the beginning of this section, we merge the top 3 clusters with the highest AUC values to form the final vessel segmentation mask (since $10/3 \sim 4$).
-\subsubsection{Optimized K-Means Algorithm}
-To address the challenge of correctly identifying vessel clusters, an optimized version of K-Means is used. This method involves:
+\subsubsection{Optimized K-means Algorithm}
+To address the challenge of correctly identifying vessel clusters, an optimized version of K-means is used. This method involves:
 \begin{enumerate}
-    \item Running standard K-Means on non-background pixels.
+    \item Running standard K-means on non-background pixels.
     \item Evaluating each cluster by computing the AUC value between the binary prediction for that cluster and the ground truth.
     \item Merging the top-K clusters with the top 3 AUC values to form the final vessel segmentation mask.
 \end{enumerate}
@@ -110,13 +110,13 @@ Figure~\ref{fig:opt} depict the three best segmentation examples using this appr
         \caption{Third Best Example (AUC=0.7032)}
         \label{fig:opt3}
     \end{subfigure}
-    \caption{Optimized K-Means: Top 3 Examples}
+    \caption{Optimized K-means: Top 3 Examples}
     \label{fig:opt}
 \end{figure}
 \noindent
 As we can see, the biggest problem is that there are a lot of false positive pixels (FP, Green) in the segmentation results, which means that their colors are difficult to distinguish from blood vessels. \\
 Therefore, we apply \textbf{image augmentation} to enhance the color differences, which may help to improve the segmentation performance. 
-\subsubsection{Image Augmentation with Optimized K-Means}
+\subsubsection{Image Augmentation with Optimized K-means}
 Image augmentation was further applied to enhance the quality of vessel segmentation. By pre-enhancing the input images, the clustering algorithm produces improved segmentation results. The results corresponding to the 3 best examples above after applying image augmentation are shown in Figure~\ref{fig:opt_aug} below. 
 \begin{figure}[H]
     \centering
@@ -141,12 +141,12 @@ Image augmentation was further applied to enhance the quality of vessel segmenta
         \caption{Third Best Example (AUC=0.7032 $\rightarrow$ \textcolor{red}{0.7515})}
         \label{fig:opt_aug3}
     \end{subfigure}
-    \caption{Optimized K-Means with Augmentation: Corresponding 3 Examples}
+    \caption{Optimized K-means with Augmentation: Corresponding 3 Examples}
     \label{fig:opt_aug}
 \end{figure}
 \noindent
 Apparently, the results are much better now. The false positive pixels (FP, Green) are significantly reduced, and the segmentation results are more accurate. 
-\subsubsection{Direction-enhanced K-Means Clustering}
+\subsubsection{Direction-enhanced K-means Clustering}
 In order to further improve segmentation, we try to take advantage of the fact that blood vessels are long and thin. So we incorporate the \textbf{gradient-based features} into the clustering process. \\
 In this approach, the original RGB features are augmented with gradient magnitude and gradient direction (obtained via the Sobel filter), forming an enhanced feature vector. Such directional information helps to better delineate vessel boundaries. Two merging strategies (merging the top 3 and top 5 vessel clusters) were tested, as illustrated in the following figures (Figure~\ref{fig:de}).
 \begin{figure}[H]
@@ -165,7 +165,7 @@ In this approach, the original RGB features are augmented with gradient magnitud
         \caption{Merging Top 5 Clusters (AUC=0.6515)}
         \label{fig:de5}
     \end{subfigure}
-    \caption{Direction-enhanced K-Means}
+    \caption{Direction-enhanced K-means}
     \label{fig:de}
 \end{figure}
 \noindent
@@ -187,22 +187,22 @@ After applying image augmentation, additional improvements can be observed (see 
         \caption{Merging Top 5 Clusters (AUC=0.6515 $\rightarrow$ \textcolor{red}{0.7126})}
         \label{fig:de_aug5}
     \end{subfigure}
-    \caption{Direction-enhanced K-Means with Augmentation}
+    \caption{Direction-enhanced K-means with Augmentation}
     \label{fig:de_aug}
 \end{figure}
 \noindent
-The overall performance of the direction-enhanced K-Means is not as good as previous methods, but it still provides a different perspective on the segmentation task by showing the potential of incorporating gradient features. Also, the results are shown in a different style, which is quite interesting. \\
+The overall performance of the direction-enhanced K-means is not as good as previous methods, but it still provides a different perspective on the segmentation task by showing the potential of incorporating gradient features. Also, the results are shown in a different style, which is quite interesting. \\
 Besides, we can also see the improvement of the AUC value after applying image augmentation, which further verify the effectiveness of this technique. 
 \subsubsection{Performance Evaluation and Comparison}
 The performance of the segmentation approaches is evaluated using accuracy, sensitivity, specificity, F1-score, and AUC value, which refer to related studies. \\
-Table~\ref{tab:performance} summarizes the performance comparison between the classic K-Means and the optimized K-Means methods, both before and after applying image augmentation. (Not include the direction-enhanced K-Means is because it is just a try and not the main focus of this project.) 
+Table~\ref{tab:performance} summarizes the performance comparison between the classic K-means and the optimized K-means methods, both before and after applying image augmentation. (Not include the direction-enhanced K-means is because it is just a try and not the main focus of this project.) 
 \begin{table}[H]
     \centering
     \caption{Performance Comparison: Before (Black) and After (Red) Image Augmentation}
     \label{tab:performance}
     \begin{tabular}{lcc}
     \hline
-    \textbf{Metric} & \textbf{Classic K-Means} & \textbf{Optimized K-Means} \\
+    \textbf{Metric} & \textbf{Classic K-means} & \textbf{Optimized K-means} \\
     \hline
     Accuracy & $0.8575 \rightarrow \textcolor{red}{0.8758}$ & $0.7266 \rightarrow \textcolor{red}{0.7673}$ \\
     Sensitivity & $0.2366 \rightarrow \textcolor{red}{0.3024}$ & $0.6042 \rightarrow \textcolor{red}{0.6493}$ \\
@@ -213,11 +213,11 @@ Table~\ref{tab:performance} summarizes the performance comparison between the cl
     \end{tabular}
 \end{table}
 \noindent
-Through comparison of evaluation metrics, it is evident that image augmentation has a positive impact on both K-Means algorithms. \\
-Although classic K-Means shows better performance in accuracy and specificity, the optimized K-Means algorithm demonstrates significant advantages in key metrics such as sensitivity and AUC value, especially when combined with image augmentation techniques, providing more effective discrimination between vessel and non-vessel regions. \\
-This suggests that the optimized K-Means algorithm has stronger recognition capabilities in vessel segmentation applications, making it particularly suitable for medical image analysis tasks that require higher detection rates.
+Through comparison of evaluation metrics, it is evident that image augmentation has a positive impact on both K-means algorithms. \\
+Although classic K-means shows better performance in accuracy and specificity, the optimized K-means algorithm demonstrates significant advantages in key metrics such as sensitivity and AUC value, especially when combined with image augmentation techniques, providing more effective discrimination between vessel and non-vessel regions. \\
+This suggests that the optimized K-means algorithm has stronger recognition capabilities in vessel segmentation applications, making it particularly suitable for medical image analysis tasks that require higher detection rates.
 \subsubsection{Conclusion and Future Work}
-For this part, we explored classical unsupervised machine learning techniques for retinal vessel segmentation. Through the use of K-Means clustering and its optimized variations, including image augmentation and the incorporation of gradient features, the proposed methods demonstrated significant improvements in segmentation performance as measured by standard evaluation metrics. \\
+For this part, we explored classical unsupervised machine learning techniques for retinal vessel segmentation. Through the use of K-means clustering and its optimized variations, including image augmentation and the incorporation of gradient features, the proposed methods demonstrated significant improvements in segmentation performance as measured by standard evaluation metrics. \\
 For future work, the following directions are suggested:
 \begin{itemize}
     \item \textbf{Improved Image Augmentation:} In addition to traditional geometric transformations (e.g., rotation and flipping), consider advanced photometric adjustments, including saturation, hue, and white balance to mimic different lighting conditions. 

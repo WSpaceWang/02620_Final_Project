@@ -132,7 +132,7 @@ def find_best_n_clusters(X_all, Y_all, min_clusters, max_clusters):
     plt.xticks(np.arange(min_clusters, max_clusters+1, 1), fontsize=12)
     plt.yticks(fontsize=12)
     plt.tight_layout()
-    plt.savefig("1-1 Find the Best n_clusters.png", bbox_inches="tight")
+    # plt.savefig("1-1 Find the Best n_clusters.png", bbox_inches="tight")
     plt.show()
     return auc_mean, best_n_clusters, best_auc_mean
 
