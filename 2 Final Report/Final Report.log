@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.7)  10 APR 2025 01:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.7)  10 APR 2025 01:26
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -372,12 +372,12 @@ Package pdftex.def Info: Figures/5 Directed (Merge 5 Clusters).png  used on inpu
 <Figures/6 Directed (Merge 3 Clusters).png, id=51, 1084.05pt x 361.35pt>
 File: Figures/6 Directed (Merge 3 Clusters).png Graphic file (type png)
 <use Figures/6 Directed (Merge 3 Clusters).png>
-Package pdftex.def Info: Figures/6 Directed (Merge 3 Clusters).png  used on input line 177.
+Package pdftex.def Info: Figures/6 Directed (Merge 3 Clusters).png  used on input line 178.
 (pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
 <Figures/6 Directed (Merge 5 Clusters).png, id=52, 1084.05pt x 361.35pt>
 File: Figures/6 Directed (Merge 5 Clusters).png Graphic file (type png)
 <use Figures/6 Directed (Merge 5 Clusters).png>
-Package pdftex.def Info: Figures/6 Directed (Merge 5 Clusters).png  used on input line 184.
+Package pdftex.def Info: Figures/6 Directed (Merge 5 Clusters).png  used on input line 185.
 (pdftex.def)             Requested size: 379.42319pt x 126.4744pt.
 
 
@@ -392,15 +392,15 @@ L3 programming layer <2024-11-02>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 5794 strings out of 473362
- 93503 string characters out of 5725051
- 491722 words of memory out of 5000000
- 28844 multiletter control sequences out of 15000+600000
- 572861 words of font info for 90 fonts, out of 8000000 for 9000
+ 5802 strings out of 473362
+ 93641 string characters out of 5725051
+ 492722 words of memory out of 5000000
+ 28852 multiletter control sequences out of 15000+600000
+ 575030 words of font info for 98 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 67i,11n,77p,831b,495s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 67i,11n,77p,831b,533s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on "Final Report.pdf" (9 pages, 7431400 bytes).
+Output written on "Final Report.pdf" (9 pages, 7470220 bytes).
 PDF statistics:
  99 PDF objects out of 1000 (max. 8388607)
  45 compressed objects within 1 object stream

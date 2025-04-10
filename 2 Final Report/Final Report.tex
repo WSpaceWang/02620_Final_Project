@@ -124,24 +124,24 @@ Image augmentation was further applied to enhance the quality of vessel segmenta
         \centering
         \includegraphics[scale=0.35]{Figures/4 Optimized 1st.png}
         \vspace{-0.5cm}
-        \caption{First Best Example (AUC=0.7498)}
+        \caption{First Best Example (AUC=0.7498 $\rightarrow$ \textcolor{red}{0.7690})}
         \label{fig:opt_aug1}
     \end{subfigure}
     \begin{subfigure}[H]{\textwidth}
         \centering
         \includegraphics[scale=0.35]{Figures/4 Optimized 2nd.png}
         \vspace{-0.5cm}
-        \caption{Second Best Example (AUC=0.7294)}
+        \caption{Second Best Example (AUC=0.7294 $\rightarrow$ \textcolor{red}{0.7757})}
         \label{fig:opt_aug2}
     \end{subfigure}
     \begin{subfigure}[H]{\textwidth}
         \centering
         \includegraphics[scale=0.35]{Figures/4 Optimized 3rd.png}
         \vspace{-0.5cm}
-        \caption{Third Best Example (AUC=0.7032)}
+        \caption{Third Best Example (AUC=0.7032 $\rightarrow$ \textcolor{red}{0.7515})}
         \label{fig:opt_aug3}
     \end{subfigure}
-    \caption{Optimized K-Means with Augmentation: Top 3 Examples???????????????}
+    \caption{Optimized K-Means with Augmentation: Corresponding 3 Examples}
     \label{fig:opt_aug}
 \end{figure}
 \noindent
@@ -169,6 +169,7 @@ In this approach, the original RGB features are augmented with gradient magnitud
     \label{fig:de}
 \end{figure}
 \noindent
+We can see that when the number of merged clusters increases, the true positive pixels (TP, Red) and false positive pixels (FP, Green) increase simultaneously. This is because the more top clusters we merge, the more TP and FP pixels are included in the final segmentation mask. \\ 
 After applying image augmentation, additional improvements can be observed (see Figure~\ref{fig:de_aug}).
 \begin{figure}[H]
     \centering
@@ -176,14 +177,14 @@ After applying image augmentation, additional improvements can be observed (see 
         \centering
         \includegraphics[scale=0.35]{Figures/6 Directed (Merge 3 Clusters).png}
         \vspace{-0.5cm}
-        \caption{Merging Top 3 Clusters (AUC=0.6583)}
+        \caption{Merging Top 3 Clusters (AUC=0.5983 $\rightarrow$ \textcolor{red}{0.6583})}
         \label{fig:de_aug3}
     \end{subfigure}
     \begin{subfigure}[H]{\textwidth}
         \centering
         \includegraphics[scale=0.35]{Figures/6 Directed (Merge 5 Clusters).png}
         \vspace{-0.5cm}
-        \caption{Merging Top 5 Clusters (AUC=0.7126)}
+        \caption{Merging Top 5 Clusters (AUC=0.6515 $\rightarrow$ \textcolor{red}{0.7126})}
         \label{fig:de_aug5}
     \end{subfigure}
     \caption{Direction-enhanced K-Means with Augmentation}
