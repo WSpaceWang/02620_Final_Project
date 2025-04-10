@@ -7,6 +7,7 @@ import matplotlib
 matplotlib.use("Qt5Agg")
 from scipy import ndimage
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 from PIL import Image, ImageEnhance
 from sklearn.metrics import confusion_matrix, accuracy_score, recall_score, precision_score, f1_score, roc_auc_score
 
@@ -110,7 +111,7 @@ def kmeans_core(x, k_clusters, max_iter=100, tol=1e-4, random_state=0):
 # 2 Find the best n_clusters
 def find_best_n_clusters(X_all, Y_all, min_clusters, max_clusters):
     auc_mean = pd.DataFrame(index=np.arange(min_clusters, max_clusters), columns=["n_clusters", "AUC_Mean"])
-    for n in np.arange(min_clusters, max_clusters):
+    for n in np.arange(min_clusters, max_clusters+1):
         auc = []
         for i in np.arange(len(X_all)):
             best_cluster, best_auc = kmeans(X_all[i], Y_all[i], n)
@@ -124,13 +125,14 @@ def find_best_n_clusters(X_all, Y_all, min_clusters, max_clusters):
     # Plot
     plt.figure(figsize=(10, 6))
     plt.plot(auc_mean.index, auc_mean["AUC_Mean"], marker=".", linestyle="-")
-    plt.title("Mean AUC Values for Different Numbers of Clusters")
-    plt.xlabel("Number of Clusters")
-    plt.ylabel("Mean AUC")
+    # plt.title("Mean AUC Values for Different Number of Clusters")
+    plt.xlabel("Number of Clusters", fontsize=16)
+    plt.ylabel("Mean AUC", fontsize=16)
     plt.grid(True, linestyle="--", alpha=0.7)
-    plt.xticks(np.arange(min_clusters, max_clusters, 1))
+    plt.xticks(np.arange(min_clusters, max_clusters+1, 1), fontsize=12)
+    plt.yticks(fontsize=12)
     plt.tight_layout()
-    plt.savefig("figures_test/1-1 Find the Best n_clusters.png", bbox_inches="tight")
+    plt.savefig("1-1 Find the Best n_clusters.png", bbox_inches="tight")
     plt.show()
     return auc_mean, best_n_clusters, best_auc_mean
 
@@ -199,11 +201,11 @@ def visualize_single(img_x, n_clusters):
     labels[main_mask] = labels_main
     labels = labels.reshape(img_x.shape[:2])
     # Plot
-    plt.figure(figsize=(6, 8.5))
+    plt.figure(figsize=(6, 7.5))
     # Original Image
     plt.subplot(221)
     plt.imshow(img_x)
-    plt.title("Original Image")
+    plt.title("Original Image", fontsize=12)
     plt.axis("off")
     # Clustered Image (Center Color)
     clustered_img_x = np.zeros_like(img_x)
@@ -213,19 +215,19 @@ def visualize_single(img_x, n_clusters):
             clustered_img_x[:, :, c][mask] = cluster_centers[i][c]
     plt.subplot(222)
     plt.imshow(np.clip(clustered_img_x, 0, 1))  # Ensure values are in [0, 1] range
-    plt.title("Clustered Image (Center Color)")
+    plt.title("Clustered Image (Center Color)", fontsize=12)
     plt.axis("off")
     # Clustered Image (Colormap)
     plt.subplot(212)
     colormap = plt.imshow(labels, cmap="viridis")  # Use a colormap to visualize clusters
-    plt.title("Clustered Image (Colormap)")
+    plt.title("Clustered Image (Colormap)", fontsize=12)
     plt.colorbar(colormap)
     plt.axis("off")
     plt.tight_layout()
     plt.show()
 # Visualize all image
 def visualize_all(X_all, n_clusters):
-    fig, axes = plt.subplots(4, 5, figsize=(18, 16))
+    fig, axes = plt.subplots(4, 5, figsize=(18, 15))
     axes = axes.flatten()
     for i in np.arange(len(X_all)):
         ax = axes[i]
@@ -239,9 +241,11 @@ def visualize_all(X_all, n_clusters):
         # Plot
         colormap = ax.imshow(labels, cmap="viridis")
         # ax.set_title(f"Image {i+1}")
-        fig.colorbar(colormap, ax=ax, fraction=0.046, pad=0.04)
+        cbar = fig.colorbar(colormap, ax=ax, fraction=0.046, pad=0.04)
+        cbar.locator = ticker.MaxNLocator(integer=True)
+        cbar.update_ticks()
         ax.axis("off")
-    fig.suptitle(f"Clustered Images (n_clusters={n_clusters})", fontsize=16)
+    # fig.suptitle(f"Clustered Images (n_clusters={n_clusters})", fontsize=16)
     plt.tight_layout()
     plt.show()
 
@@ -299,21 +303,21 @@ def optimized_kmeans(img_x, img_y, n_clusters, top_k):
     return binary_segmentation, auc_val, vessel_clusters
 # Separate visualization function
 def optimized_visualize(img_x, img_y, binary_segmentation, auc_val):
-    plt.figure(figsize=(15, 5))
+    plt.figure(figsize=(16, 5))
     # Original image
     plt.subplot(141)
     plt.imshow(img_x)
-    plt.title("Original Image")
+    plt.title("Original Image", fontsize=14)
     plt.axis("off")
     # Ground truth vessel annotation
     plt.subplot(142)
     plt.imshow(img_y, cmap="gray")
-    plt.title("Ground Truth Vessels")
+    plt.title("Ground Truth Vessels", fontsize=14)
     plt.axis("off")
     # Predicted vessel segmentation
     plt.subplot(143)
     plt.imshow(binary_segmentation, cmap="gray")
-    plt.title(f"Predicted Vessels (AUC={auc_val:.4f})")
+    plt.title(f"Predicted Vessels (AUC={auc_val:.4f})", fontsize=14)
     plt.axis("off")
     # Overlay display (red for true positives, green for false positives, blue for false negatives)
     overlay = np.zeros((*binary_segmentation.shape, 3))
@@ -325,7 +329,7 @@ def optimized_visualize(img_x, img_y, binary_segmentation, auc_val):
     overlay[..., 2] = np.logical_and(binary_segmentation == 0, img_y > 0)
     plt.subplot(144)
     plt.imshow(overlay)
-    plt.title("Overlay (Red=TP, Green=FP, Blue=FN)")
+    plt.title("Overlay (Red=TP, Green=FP, Blue=FN)", fontsize=14)
     plt.axis("off")
     plt.tight_layout()
     plt.show()
