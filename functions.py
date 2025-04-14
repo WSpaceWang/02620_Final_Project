@@ -90,7 +90,6 @@ def kmeans_core(x, k_clusters, max_iter=100, tol=1e-4, random_state=0):
             if len(cluster_points) > 0:
                 new_centers[j] = cluster_points.mean(axis=0)
             else:
-                # 如果簇为空，保留旧中心点
                 new_centers[j] = center[j]
         # Calculate the objective function value
         obj = 0
