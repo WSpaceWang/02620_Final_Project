@@ -1,0 +1,25 @@
+Original:
+
+Performance Comparison: Classic K-means vs. Optimized K-means
+------------------------------------------------------------
+Metric          | Classic K-means  | Optimized K-means
+------------------------------------------------------------
+Accuracy        | 0.8062           | 0.6193
+Sensitivity     | 0.2228           | 0.5862
+Specificity     | 0.8898           | 0.6247
+F1              | 0.2270           | 0.2802
+AUC             | 0.5563           | 0.6054
+
+-------------------------------------------------------------------------------------
+
+After augmenting image: 
+
+Performance Comparison: Classic K-means vs. Optimized K-means
+------------------------------------------------------------
+Metric          | Classic K-means  | Optimized K-means
+------------------------------------------------------------
+Accuracy        | 0.8404           | 0.6938
+Sensitivity     | 0.2805           | 0.6138
+Specificity     | 0.9200           | 0.7057
+F1              | 0.3115           | 0.3393
+AUC             | 0.6003           | 0.6598

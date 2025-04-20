@@ -159,11 +159,15 @@ def kmeans(img_x, img_y, n_clusters):
 def evaluate_clusters(labels, img_y, n_clusters):
     best_auc = 0
     best_cluster = -1
+    active_pixels = (labels != -1)
     for i in range(n_clusters):
         # True vessel mask: set vessel pixels to 1, background to 0
-        true_vessel = (img_y > 0).astype(np.int32).reshape(-1)
+        true_vessel = (img_y > 0).astype(np.int32)
         # Prediction: set pixels in current cluster to 1, others to 0
-        pred_vessel = (labels == i).astype(np.int32).reshape(-1)
+        pred_vessel = (labels == i).astype(np.int32)
+        # Filter out background pixels
+        true_vessel = true_vessel[active_pixels].flatten()
+        pred_vessel = pred_vessel[active_pixels].flatten()
         # Calculate confusion matrix and metrics
         cm = confusion_matrix(true_vessel, pred_vessel)
         acc = accuracy_score(true_vessel, pred_vessel)
@@ -252,10 +256,14 @@ def visualize_all(X_all, n_clusters):
 # 5 Optimized KMeans Clustering
 # Identify the most likely vessel clusters
 def identify_vessel_clusters(labels, ground_truth, n_clusters, top_k):
-    true_vessel = (ground_truth > 0).astype(np.int32).reshape(-1)
+    active_pixels = (labels != -1)
+    true_vessel = (ground_truth > 0).astype(np.int32)
+    true_vessel = true_vessel[active_pixels].flatten()
     scores = []
     for i in range(n_clusters):
-        pred_vessel = (labels == i).astype(np.int32).reshape(-1)
+        pred_vessel = (labels == i).astype(np.int32)
+        # Filter out background pixels
+        pred_vessel = pred_vessel[active_pixels].flatten()
         # Use the ROC AUC score to evaluate the cluster
         try:
             score = roc_auc_score(true_vessel, pred_vessel)
@@ -292,8 +300,11 @@ def optimized_kmeans(img_x, img_y, n_clusters, top_k):
     binary_segmentation = np.zeros_like(labels)
     for cluster in vessel_clusters:
         binary_segmentation[labels == cluster] = 1
-    true_vessel = (img_y > 0).astype(np.int32).reshape(-1)
-    pred_vessel = binary_segmentation.reshape(-1)
+    active_pixels = (labels != -1)
+    true_vessel = (img_y > 0).astype(np.int32)
+    pred_vessel = binary_segmentation
+    true_vessel = true_vessel[active_pixels].flatten()
+    pred_vessel = pred_vessel[active_pixels].flatten()
     try:
         auc_val = roc_auc_score(true_vessel, pred_vessel)
     except Exception as e:
@@ -349,12 +360,16 @@ def compare_kmeans_algorithms(X_all, Y_all, n_clusters, top_k):
         labels = np.zeros(X.shape[0], dtype=int) - 1
         labels[main_mask] = labels_main
         labels = labels.reshape(X_all[i].shape[:2])
-        classic_pred = (labels == best_cluster).astype(np.int32).reshape(-1)
+        active_pixels = (labels != -1)
+        classic_pred = (labels == best_cluster).astype(np.int32)
         # Optimized KMeans
         binary_segmentation, opt_auc, _ = optimized_kmeans(X_all[i], Y_all[i], n_clusters, top_k)
-        optimized_pred = binary_segmentation.reshape(-1)
+        optimized_pred = binary_segmentation
         # True values
-        true_vessel = (Y_all[i] > 0).astype(np.int32).reshape(-1)
+        true_vessel = (Y_all[i] > 0).astype(np.int32)
+        true_vessel = true_vessel[active_pixels].flatten()
+        classic_pred = classic_pred[active_pixels].flatten()
+        optimized_pred = optimized_pred[active_pixels].flatten()
         # Calculate metrics for both algorithms
         # Classic KMeans
         classic_metrics["accuracy"].append(accuracy_score(true_vessel, classic_pred))
@@ -417,8 +432,11 @@ def direction_enhanced_kmeans(img_x, img_y, n_clusters, top_k):
     labels = labels.reshape(img_x.shape[:2])
     # Merge
     segmentation, vessel_clusters, scores = merge_top_clusters(labels, img_y, n_clusters, top_k)
-    true_vessel = (img_y > 0).astype(np.int32).reshape(-1)
-    pred_vessel = segmentation.reshape(-1)
+    active_pixels = (labels != -1)
+    true_vessel = (img_y > 0).astype(np.int32)
+    pred_vessel = segmentation
+    true_vessel = true_vessel[active_pixels].flatten()
+    pred_vessel = pred_vessel[active_pixels].flatten()
     try:
         auc_val = roc_auc_score(true_vessel, pred_vessel)
     except Exception as e:
