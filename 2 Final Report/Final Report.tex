@@ -53,7 +53,7 @@ The approach we used involves evaluating different numbers of clusters (ranging 
     \label{fig:nclusters}
 \end{figure}
 \noindent
-As shown in Figure~\ref{fig:nclusters}, the mean AUC value \textbf{decreases} with the cluster number, aka the additional clusters make the performance worse. \\
+As shown in Figure~\ref{fig:nclusters}, the mean AUC value \textbf{increases} with the cluster number, but the growth is gradually slowing down. \\
 Then, we try to make a further decision through visualizing the segmentation results for all images with different cluster numbers, which are shown below in Figure~\ref{fig:n=2}, \ref{fig:n=6}, and \ref{fig:n=10}. 
 \begin{figure}[H]
     \centering
@@ -96,21 +96,21 @@ Figure~\ref{fig:opt} depict the three best segmentation examples using this appr
         \centering
         \includegraphics[scale=0.35]{Figures/3 Optimized 1st.png}
         \vspace{-0.5cm}
-        \caption{First Best Example (AUC=0.7498)}
+        \caption{First Best Example (AUC=0.6938)}
         \label{fig:opt1}
     \end{subfigure}
     \begin{subfigure}[H]{\textwidth}
         \centering
         \includegraphics[scale=0.35]{Figures/3 Optimized 2nd.png}
         \vspace{-0.5cm}
-        \caption{Second Best Example (AUC=0.7294)}
+        \caption{Second Best Example (AUC=0.6926)}
         \label{fig:opt2}
     \end{subfigure}
     \begin{subfigure}[H]{\textwidth}
         \centering
         \includegraphics[scale=0.35]{Figures/3 Optimized 3rd.png}
         \vspace{-0.5cm}
-        \caption{Third Best Example (AUC=0.7032)}
+        \caption{Third Best Example (AUC=0.6330)}
         \label{fig:opt3}
     \end{subfigure}
     \caption{Optimized K-means: Top 3 Examples}
@@ -127,21 +127,21 @@ Image augmentation was further applied to enhance the quality of vessel segmenta
         \centering
         \includegraphics[scale=0.35]{Figures/4 Optimized 1st.png}
         \vspace{-0.5cm}
-        \caption{First Best Example (AUC=0.7498 $\rightarrow$ \textcolor{red}{0.7690})}
+        \caption{First Best Example (AUC=0.6938 $\rightarrow$ \textcolor{red}{0.7297})}
         \label{fig:opt_aug1}
     \end{subfigure}
     \begin{subfigure}[H]{\textwidth}
         \centering
         \includegraphics[scale=0.35]{Figures/4 Optimized 2nd.png}
         \vspace{-0.5cm}
-        \caption{Second Best Example (AUC=0.7294 $\rightarrow$ \textcolor{red}{0.7757})}
+        \caption{Second Best Example (AUC=0.6926 $\rightarrow$ \textcolor{red}{0.7064})}
         \label{fig:opt_aug2}
     \end{subfigure}
     \begin{subfigure}[H]{\textwidth}
         \centering
         \includegraphics[scale=0.35]{Figures/4 Optimized 3rd.png}
         \vspace{-0.5cm}
-        \caption{Third Best Example (AUC=0.7032 $\rightarrow$ \textcolor{red}{0.7515})}
+        \caption{Third Best Example (AUC=0.6330 $\rightarrow$ \textcolor{red}{0.6914})}
         \label{fig:opt_aug3}
     \end{subfigure}
     \caption{Optimized K-means with Augmentation: Corresponding 3 Examples}
@@ -158,14 +158,14 @@ In this approach, the original RGB features are augmented with gradient magnitud
         \centering
         \includegraphics[scale=0.35]{Figures/5 Directed (Merge 3 Clusters).png}
         \vspace{-0.5cm}
-        \caption{Merging Top 3 Clusters (AUC=0.5983)}
+        \caption{Merging Top 3 Clusters (AUC=0.5217)}
         \label{fig:de3}
     \end{subfigure}
     \begin{subfigure}[H]{\textwidth}
         \centering
         \includegraphics[scale=0.35]{Figures/5 Directed (Merge 5 Clusters).png}
         \vspace{-0.5cm}
-        \caption{Merging Top 5 Clusters (AUC=0.6515)}
+        \caption{Merging Top 5 Clusters (AUC=0.5262)}
         \label{fig:de5}
     \end{subfigure}
     \caption{Direction-enhanced K-means}
@@ -180,14 +180,14 @@ After applying image augmentation, additional improvements can be observed (see 
         \centering
         \includegraphics[scale=0.35]{Figures/6 Directed (Merge 3 Clusters).png}
         \vspace{-0.5cm}
-        \caption{Merging Top 3 Clusters (AUC=0.5983 $\rightarrow$ \textcolor{red}{0.6583})}
+        \caption{Merging Top 3 Clusters (AUC=0.5217 $\rightarrow$ \textcolor{red}{0.5340})}
         \label{fig:de_aug3}
     \end{subfigure}
     \begin{subfigure}[H]{\textwidth}
         \centering
         \includegraphics[scale=0.35]{Figures/6 Directed (Merge 5 Clusters).png}
         \vspace{-0.5cm}
-        \caption{Merging Top 5 Clusters (AUC=0.6515 $\rightarrow$ \textcolor{red}{0.7126})}
+        \caption{Merging Top 5 Clusters (AUC=0.5262 $\rightarrow$ \textcolor{red}{0.5373})}
         \label{fig:de_aug5}
     \end{subfigure}
     \caption{Direction-enhanced K-means with Augmentation}
@@ -195,7 +195,7 @@ After applying image augmentation, additional improvements can be observed (see 
 \end{figure}
 \noindent
 The overall performance of the direction-enhanced K-means is not as good as previous methods, but it still provides a different perspective on the segmentation task by showing the potential of incorporating gradient features. Also, the results are shown in a different style, which is quite interesting. \\
-Besides, we can also see the improvement of the AUC value after applying image augmentation, which further verify the effectiveness of this technique. 
+Besides, we can also see the small improvement of the AUC value after applying image augmentation, which further verify the effectiveness of this technique. 
 \subsubsection{Performance Evaluation and Comparison}
 The performance of the segmentation approaches is evaluated using accuracy, sensitivity, specificity, F1-score, and AUC value, which refer to related studies. \\
 Table~\ref{tab:performance} summarizes the performance comparison between the classic K-means and the optimized K-means methods, both before and after applying image augmentation. (Not include the direction-enhanced K-means is because it is just a try and not the main focus of this project.) 
@@ -207,11 +207,11 @@ Table~\ref{tab:performance} summarizes the performance comparison between the cl
     \hline
     \textbf{Metric} & \textbf{Classic K-means} & \textbf{Optimized K-means} \\
     \hline
-    Accuracy & $0.8575 \rightarrow \textcolor{red}{0.8758}$ & $0.7266 \rightarrow \textcolor{red}{0.7673}$ \\
-    Sensitivity & $0.2366 \rightarrow \textcolor{red}{0.3024}$ & $0.6042 \rightarrow \textcolor{red}{0.6493}$ \\
-    Specificity & $0.9165 \rightarrow \textcolor{red}{0.9304}$ & $0.7385 \rightarrow \textcolor{red}{0.7789}$ \\
-    F1 Score   & $0.2278 \rightarrow \textcolor{red}{0.3047}$ & $0.2782 \rightarrow \textcolor{red}{0.3292}$ \\
-    AUC value    & $0.5766 \rightarrow \textcolor{red}{0.6164}$ & $0.6714 \rightarrow \textcolor{red}{0.7141}$ \\
+    Accuracy & $0.8062 \rightarrow \textcolor{red}{0.8404}$ & $0.6193 \rightarrow \textcolor{red}{0.6938}$ \\
+    Sensitivity & $0.2228 \rightarrow \textcolor{red}{0.2805}$ & $0.5862 \rightarrow \textcolor{red}{0.6138}$ \\
+    Specificity & $0.8898 \rightarrow \textcolor{red}{0.9200}$ & $0.6247 \rightarrow \textcolor{red}{0.7057}$ \\
+    F1 Score   & $0.2270 \rightarrow \textcolor{red}{0.3115}$ & $0.2802 \rightarrow \textcolor{red}{0.3393}$ \\
+    AUC value    & $0.5563 \rightarrow \textcolor{red}{0.6003}$ & $0.6054 \rightarrow \textcolor{red}{0.6598}$ \\
     \hline
     \end{tabular}
 \end{table}
