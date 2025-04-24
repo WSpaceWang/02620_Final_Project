@@ -16,6 +16,7 @@
 \usepackage{enumitem}       % For enumerate
 \usepackage{bm}             % For bold math symbols
 \usepackage{subcaption}     % For subfigures
+\usepackage{amsmath}        % For math symbols
 
 \title{Segmentation of Vessels in Retinal Images}
 
@@ -142,15 +143,57 @@ Table~\ref{tab:performance} summarizes the performance comparison between the cl
     \bottomrule
     \end{tabular}
 \end{table}
-
-
-
-
-
 Through comparison of evaluation metrics, it is evident that image augmentation has a positive impact on both K-means algorithms. \\
 Although classic K-means shows better performance in accuracy and specificity, the optimized K-means algorithm demonstrates significant advantages in key metrics such as sensitivity and AUC value, especially when combined with image augmentation techniques, providing more effective discrimination between vessel and non-vessel regions. \\
 This suggests that the optimized K-means algorithm has stronger recognition capabilities in vessel segmentation applications, making it particularly suitable for medical image analysis tasks that require higher detection rates.
 
+\subsection{Random Forest Classification}
+The random forest algorithm, a robust ensemble learning method, can be effectively applied to retinal image segmentation by leveraging its ability to classify pixels into anatomical or pathological regions through supervised learning. In this context, features such as pixel intensity, texture gradients, local binary patterns, and responses to edge-detection filters (e.g., Sobel or Gabor) are extracted from retinal images to capture structural details of blood vessels, lesions, or the optic disc. During training, the algorithm constructs multiple decision trees, each trained on random subsets of the data and features, to predict pixel-wise labels from annotated ground-truth masks. At inference, the ensemble aggregates predictions across trees, assigning each pixel to the most probable class (e.g., vessel vs. non-vessel), while mitigating overfitting through majority voting. 
+
+\subsubsection{Training Process}
+The gist of Random Forest is to build multiple decision trees and aggregate their predictions. The training process involves the following steps:
+\begin{enumerate}
+    \item \textbf{Feature Extraction}: Extract features from the training images, in our cases, the features are simply the RGB values of the pixels.
+    \item \textbf{Random Sampling}: Randomly select subsets of the training data and features to build each decision tree, ensuring diversity among trees.
+    \item \textbf{Tree Construction}: For each subset, construct a decision tree by recursively splitting the data based on feature thresholds that maximize information gain or minimize Gini impurity (which is the taken approach).
+    
+\textbf{Gini impurity} (for class \( k \)):  
+\[
+G = 1 - \sum_{k=1}^K p_k^2
+\]  
+where \( p_k \) is the proportion of samples of class \( k \) in the node.  
+
+\textbf{Information gain} (using entropy \( H \)):  
+\[
+H = -\sum_{k=1}^K p_k \log p_k
+\]  
+\[
+\text{Information Gain} = H_{\text{parent}} - \sum_{\text{child}} \frac{N_{\text{child}}}{N_{\text{parent}}} H_{\text{child}}
+\]  
+
+    \item \textbf{Prediction Aggregation}: At inference, aggregate predictions from all trees using majority voting to assign the final class label to each pixel.
+\end{enumerate}
+
+    Through the whole training process, totally 10 images, \(10 \times 584 \times 565 = 3299600\) pixels are trained upon. The pixels are separeted into 3 classes: 0 for masked boundary, 1 for background and 2 for blood vessels. Below is a typical prediction result given by the classifier:
+
+    \begin{figure}[H]
+        \centering
+            \centering
+            \includegraphics[scale=0.4]{Figures/mjc.png}
+            \caption{1st image is the original image, 2nd image is the manually labeled image for training, 3rd image is the predicted image by the random forest algorithm.}\label{fig:mjct27}
+    \end{figure}
+    \noindent
+
+    \begin{table}[H]
+        \caption{Metrics for the segmentation Task}
+        \begin{tabular}{ccccc}
+                         & precision & recall & f1-score & support \\
+        background       & 0.91      & 0.80   & 0.85     & 198755  \\
+        retinal          & 0.24      & 0.44   & 0.31     & 29073   \\
+        accuracy         &           &        & 0.75     & 227828  \\
+        weighted average & 0.82      & 0.75   & 0.78     & 227828  
+        \end{tabular}
+    \end{table}
 
 
 \section{Discussions}
