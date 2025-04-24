@@ -1,0 +1,20 @@
+\begin{thebibliography}{2}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Li et~al.(2022)Li, Xiao, Hu, et~al.]{1}
+W.~Li, Y.~Xiao, H.~Hu, et~al.
+\newblock Retinal vessel segmentation based on b-cosfire filters in fundus images.
+\newblock \emph{Frontiers in Public Health}, 10:\penalty0 914973, 2022.
+\newblock \doi{10.3389/fpubh.2022.914973}.
+
+\bibitem[Khandouzi et~al.(2022)Khandouzi, Ariafar, Mashayekhpour, Pazira, and Baleghi]{review2022}
+A.~Khandouzi, A.~Ariafar, Z.~Mashayekhpour, M.~Pazira, and Y.~Baleghi.
+\newblock Retinal vessel segmentation, a review of classic and deep methods.
+\newblock \emph{Annals of Biomedical Engineering}, 50\penalty0 (10):\penalty0 1292--1314, 2022.
+\newblock \doi{10.1007/s10439-022-03058-0}.
+
+\end{thebibliography}
