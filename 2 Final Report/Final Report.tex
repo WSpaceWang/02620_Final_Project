@@ -171,8 +171,7 @@ Although classic K-means shows better performance in accuracy and specificity, t
 This suggests that the optimized K-means algorithm has stronger recognition capabilities in vessel segmentation applications, making it particularly suitable for medical image analysis tasks that require higher detection rates.
 
 \subsection{Random Forest Classification}
-Through the whole training process, totally 10 images, \(10 \times 584 \times 565 = 3299600\) pixels are trained upon. The pixels are separeted into 3 classes: 0 for masked boundary, 1 for background and 2 for blood vessels. \\
-A typical prediction result given by the classifier is shown below in Figure~\ref{fig:mjct27} and Table~\ref{tab:mjct27}. 
+Through the whole training process, totally 10 images, \(10 \times 584 \times 565 = 3299600\) pixels are trained upon. The pixels are separeted into 3 classes: 0 for masked boundary, 1 for background and 2 for blood vessels. A typical prediction result given by the classifier is shown below in Figure~\ref{fig:mjct27} and Table~\ref{tab:mjct27}, with an AUC of approximately \textbf{0.6176}. 
 \begin{figure}[H]
     \centering
         \centering
@@ -187,10 +186,10 @@ A typical prediction result given by the classifier is shown below in Figure~\re
     \toprule
                      & precision & recall & f1-score & support \\
     \midrule
-    background       & 0.91      & 0.80   & 0.85     & 198755  \\
-    retinal          & 0.24      & 0.44   & 0.31     & 29073   \\
-    accuracy         &           &        & 0.75     & 227828  \\
-    weighted average & 0.82      & 0.75   & 0.78     & 227828  \\
+    background       & 0.91      & 0.80 (specificity) & 0.85     & 198755  \\
+    retinal          & 0.24      & 0.44 (sensitivity) & 0.31     & 29073   \\
+    accuracy         &           &        & 0.75      & 227828  \\
+    weighted average & 0.82      & 0.75   & 0.78      & 227828  \\
     \bottomrule
     \end{tabular}
     \label{tab:mjct27}
