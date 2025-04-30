@@ -24,25 +24,21 @@
     Shiyu Wang \\
     M.S. in Computational Biology \\
     Carnegie Mellon University \\
-    Pittsburgh, PA 15213 \\
     \texttt{shiyuwa2@andrew.cmu.edu} \\
     \And
     Enhao He \\
     M.S. in Computational Biology \\
     Carnegie Mellon University \\
-    Pittsburgh, PA 15213 \\
     \texttt{enhaoh@andrew.cmu.edu} \\
     \AND
     Jiacheng Ma \\
     M.S. in Computational Biology \\
     Carnegie Mellon University \\
-    Pittsburgh, PA 15213 \\
     \texttt{jiachenm@andrew.cmu.edu} \\
     \And
     Joe Wang \\
     M.S. in Computational Biology \\
     Carnegie Mellon University \\
-    Pittsburgh, PA 15213 \\
     \texttt{joewang@andrew.cmu.edu} \\
 }
 
@@ -86,29 +82,17 @@ Image augmentation was further applied to enhance the quality of vessel segmenta
 \textbf{4. Direction-enhanced K-means Clustering} \\
 To further improve segmentation, we try to utilize the fact that blood vessels are long and thin by incorporating the \textbf{gradient-based features} into the clustering process. In this approach, the original RGB features are augmented with gradient magnitude and gradient direction (obtained via the Sobel filter), forming an enhanced feature vector. Such directional information helps to better delineate vessel boundaries.
 \subsection{Random Forest Classification}
-The random forest algorithm, a robust ensemble learning method, can be effectively applied to retinal image segmentation by leveraging its ability to classify pixels into anatomical or pathological regions through supervised learning. In this context, features such as pixel intensity, texture gradients, local binary patterns, and responses to edge-detection filters (e.g., Sobel or Gabor) are extracted from retinal images to capture structural details of blood vessels, lesions, or the optic disc. During training, the algorithm constructs multiple decision trees, each trained on random subsets of the data and features, to predict pixel-wise labels from annotated ground-truth masks. At inference, the ensemble aggregates predictions across trees, assigning each pixel to the most probable class (e.g., vessel vs. non-vessel), while mitigating overfitting through majority voting. 
-\paragraph{Training Process:} The gist of Random Forest is to build multiple decision trees and aggregate their predictions. The training process involves the following steps: 
-\begin{enumerate}
-    \item \textbf{Feature Extraction}: Extract features from the training images, in our cases, the features are simply the RGB values of the pixels.
-    \item \textbf{Random Sampling}: Randomly select subsets of the training data and features to build each decision tree, ensuring diversity among trees.
-    \item \textbf{Tree Construction}: For each subset, construct a decision tree by recursively splitting the data based on feature thresholds that maximize information gain or minimize Gini impurity (which is the taken approach).
-    
-\textbf{Gini impurity} (for class \( k \)):  
-\[
-G = 1 - \sum_{k=1}^K p_k^2
-\]  
-where \( p_k \) is the proportion of samples of class \( k \) in the node.  
-
-\textbf{Information gain} (using entropy \( H \)):  
-\[
-H = -\sum_{k=1}^K p_k \log p_k
-\]  
-\[
-\text{Information Gain} = H_{\text{parent}} - \sum_{\text{child}} \frac{N_{\text{child}}}{N_{\text{parent}}} H_{\text{child}}
-\]  
-
-    \item \textbf{Prediction Aggregation}: At inference, aggregate predictions from all trees using majority voting to assign the final class label to each pixel.
-\end{enumerate}
+The random forest algorithm, a robust ensemble learning method, can be effectively applied to retinal image segmentation by leveraging its ability to classify pixels into anatomical or pathological regions through supervised learning. In this context, features such as pixel intensity, texture gradients, local binary patterns, and responses to edge-detection filters (e.g., Sobel or Gabor) are extracted from retinal images to capture structural details of blood vessels, lesions, or the optic disc. \\
+\textbf{Training Process}: The gist of Random Forest is to build multiple decision trees and aggregate their predictions. The training process involves the following steps: \\
+\textbf{1. Feature Extraction}: Extract features from the training images, in our cases, the features are simply the RGB values of the pixels. \\
+\textbf{2. Random Sampling}: Randomly select subsets of the training data and features to build each decision tree, ensuring diversity among trees. \\
+\textbf{3. Tree Construction}: For each subset, construct a decision tree by recursively splitting the data based on feature thresholds that maximize information gain or minimize Gini impurity. \\
+\textbf{4. Prediction Aggregation}: At inference, aggregate predictions from all trees using majority voting to assign the final class label to each pixel.
+\subsection{Support Vector Machine (SVM)}
+We implemented a soft-margin Support Vector Machine (SVM) using the Radial Basis Function (RBF) kernel to handle non-linear classification. The dual optimization problem was solved using the \texttt{cvxopt} quadratic programming solver, enabling efficient training under soft-margin constraints. To address class imbalance, we manually adjusted sample weights so that both classes contributed more equally to the decision boundary. Support vectors were selected based on non-zero Lagrange multipliers (\(\alpha > 10^{-5}\)). To convert the SVM's decision scores into probabilities, we applied Platt scaling by fitting a logistic regression model to the outputs. This enabled a probabilistic interpretation of predictions, which is useful for downstream tasks. The final implementation supported end-to-end training, prediction, and probability estimation.
+\subsection{Naive Bayes Classifier}
+\textbf{Preprocessing}: CLAHE was applied in the LAB color space to enhance vessel contrast. Pixels outside the Field of View were masked using binary masks. For each valid pixel, RGB intensities were extracted as features. Labels were assigned as 1 (vessel) or 0 (background) using manual annotations. To handle class imbalance, all vessel pixels were retained, and an equal number of background pixels were randomly sampled. \\
+\textbf{Model}: A custom \textbf{Gaussian Naive Bayes (GNB)} was implemented. For each class, mean, variance, and prior were computed assuming pixel independence and normal distribution. During prediction, posterior probabilities were calculated, and the class with the highest posterior was assigned. 80\% of the balanced data was used for training, 20\% for testing (random seed fixed).
 
 
 \section{Results}
@@ -169,14 +153,13 @@ Table~\ref{tab:performance} summarizes the performance comparison between the cl
 Through comparison of evaluation metrics, it is evident that image augmentation has a positive impact on both K-means algorithms. \\
 Although classic K-means shows better performance in accuracy and specificity, the optimized K-means algorithm demonstrates significant advantages in key metrics such as sensitivity and AUC value, especially when combined with image augmentation techniques, providing more effective discrimination between vessel and non-vessel regions. \\
 This suggests that the optimized K-means algorithm has stronger recognition capabilities in vessel segmentation applications, making it particularly suitable for medical image analysis tasks that require higher detection rates.
-
 \subsection{Random Forest Classification}
 Through the whole training process, totally 10 images, \(10 \times 584 \times 565 = 3299600\) pixels are trained upon. The pixels are separeted into 3 classes: 0 for masked boundary, 1 for background and 2 for blood vessels. A typical prediction result given by the classifier is shown below in Figure~\ref{fig:mjct27} and Table~\ref{tab:mjct27}, with an AUC of approximately \textbf{0.6176}. 
 \begin{figure}[H]
     \centering
         \centering
         \includegraphics[scale=0.2]{Figures/mjc.png}
-        \caption{1st image is the original image, 2nd image is the manually labeled image for training, 3rd image is the predicted image by the random forest algorithm.}\label{fig:mjct27}
+        \caption{One example (1st image is the original image, 2nd image is the manually labeled image for training, 3rd image is the predicted image by the random forest algorithm).}\label{fig:mjct27}
 \end{figure}
 \vspace{-0.75cm}
 \begin{table}[H]
@@ -194,88 +177,67 @@ Through the whole training process, totally 10 images, \(10 \times 584 \times 56
     \end{tabular}
     \label{tab:mjct27}
 \end{table}
-
-
-\section{Discussions}
-For this part, we explored classical unsupervised machine learning techniques for retinal vessel segmentation. Through the use of K-means clustering and its optimized variations, including image augmentation and the incorporation of gradient features, the proposed methods demonstrated significant improvements in segmentation performance as measured by standard evaluation metrics. \\
-For future work, the following directions are suggested:
-\begin{itemize}
-    \item \textbf{Improved Image Augmentation:} In addition to traditional geometric transformations (e.g., rotation and flipping), consider advanced photometric adjustments, including saturation, hue, and white balance to mimic different lighting conditions. 
-    \item \textbf{Enhanced Feature Extraction:} Incorporating additional features beyond raw RGB values and gradients, such as texture descriptors, fractal-based features, or deep feature representations, to better capture vessel morphology.
-\end{itemize}
-\newpage
-
-
-
-
-
-
-
-
-
-
-
-\section{Figures}
-
-
+\subsection{Support Vector Machine (SVM)}
+To evaluate the performance of our custom SVM, we also trained a Support Vector Classifier (SVC) using Scikit-learn as a baseline for comparison. The result is shown below in Table~\ref{tab:ehh}. 
+\begin{table}[H]
+\centering
+\caption{Comparison between Custom SVM and Scikit-learn SVC}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Custom SVM (from scratch)} & \textbf{SVC (Scikit-learn)} \\
+\midrule
+Precision & 0.22 & 0.21 \\
+Recall & 0.11 & 0.62 \\
+F1 Score & 0.14 & 0.31 \\
+Accuracy & 0.84 & 0.65 \\
+AUC & 0.60 & 0.69 \\
+\bottomrule
+\end{tabular}
+\label{tab:ehh}
+\end{table}
+Despite achieving higher accuracy, the custom SVM significantly underperformed in recall, F1 score, and AUC compared to Scikit-learn’s SVC. This can be attributed to several factors. First, our model was trained on only 15\% of the dataset due to the computational complexity of the SVM algorithm and the high cost of solving the dual optimization problem, especially with the RBF kernel. This limited training set size reduced the model’s ability to generalize, particularly on the minority class. Second, our implementation did not include solver optimizations such as SMO, kernel caching, or shrinking heuristics, all of which are integrated into Scikit-learn's efficient SVC. Lastly, we used fixed hyperparameters without tuning (e.g., \(C\) and \(\gamma\)), which likely constrained the model’s classification performance.
+\subsection{Naive Bayes Classifier}
+This study demonstrates the effectiveness of a simple Gaussian Naive Bayes model for retinal vessel segmentation. \textbf{Key Observations}: CLAHE improved contrast, and class balancing prevented bias. GNB achieved 67\% accuracy and \textbf{0.72 ROC AUC}. \\
+\textbf{Limitations}: Struggles with thin vessels and ignores spatial context. Gaussian assumption may not fit real distributions. The total results and an example of the segmentation are shown below in Table~\ref{tab:joe} and Figure~\ref{fig:joe} respectively. These results indicate balanced performance across both classes.
+\begin{table}[H]
+    \centering
+    \caption{Classification Report}
+    \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} \\
+    \midrule
+    0 & 0.67 & 0.66 & 0.66 & 113,484 \\
+    1 & 0.67 & 0.67 & 0.67 & 114,282 \\
+    \midrule
+    \textbf{Accuracy} & \multicolumn{4}{c}{0.67} \\
+    \textbf{Macro Avg} & 0.67 & 0.67 & 0.67 & 227,766 \\
+    \textbf{Weighted Avg} & 0.67 & 0.67 & 0.67 & 227,766 \\
+    \bottomrule
+    \end{tabular}
+    \label{tab:joe}
+\end{table}
+\textbf{Sample Prediction}:
 \begin{figure}[H]
     \centering
-    \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-    \caption{Sample figure caption.}
+    \centering
+    \includegraphics[scale=0.25]{Figures/joe.png}
+    \caption{One example (1st is the original image, 2nd is the predicted image, 3rd is the segmentation overlay).}
+    \label{fig:joe}
 \end{figure}
 
 
-All artwork must be neat, clean, and legible. Lines should be dark enough for
-purposes of reproduction. The figure number and caption always appear after the
-figure. Place one line space before the figure caption and one line space after
-the figure. The figure caption should be lower case (except for first word and
-proper nouns); figures are numbered consecutively.
+\section{Discussions}
+In this work, our results demonstrate that image augmentation and designed feature enhancements can significantly improve retinal vessel segmentation. In particular, the \textbf{optimized K-means clustering} approach yielded notable improvements in sensitivity and AUC compared to the classic K-means variant, even \textbf{\textit{reaching} the level of supervised learning}. The integration of directional features offered additional insights into vessel boundary delineation, although its overall performance was comparatively modest. \\
+Furthermore, while methods such as \textbf{Random Forests}, \textbf{SVM}, and \textbf{Gaussian Naive Bayes} each exhibited unique strengths in pixel classification, our findings indicate that careful handling of feature selection, model optimization, and training data balance is essential for robust segmentation performance, which \textbf{have a chance to make the performance of unsupervised model better than the supervised model}. 
+\paragraph{Future Work:} \hfill \\
+\textbf{1. Dataset Expansion and Diversification:} Evaluating the proposed approaches on larger and more diverse datasets to enhance the generalizability and robustness of the segmentation models. \\
+\textbf{2. Advanced Feature Engineering:} Integrating modern deep learning-based feature extraction techniques and multi-scale analysis to better capture the intricate morphology of retinal vessels. \\
+\textbf{3. Hyperparameter and Solver Optimization:} Conducting systematic hyperparameter tuning (e.g., grid search, Bayesian optimization) and deploying more efficient solver strategies (such as SMO or kernel caching for SVMs) to improve overall model performance. \\
+\textbf{4. Post-Processing Enhancements:} Investigating post-processing approaches such as morphological filtering or conditional random fields (CRF) to further reduce false positives and refine vessel continuity.
 
 
-You may use color figures.  However, it is best for the figure captions and the
-paper body to be legible if the paper is printed in either black/white or in
-color.
-
-
-\section{Tables}
-
-
-All tables must be centered, neat, clean and legible.  The table number and
-title always appear before the table.  See Table~\ref{sample-table}.
-
-
-Place one line space before the table title, one line space after the
-table title, and one line space after the table. The table title must
-be lower case (except for first word and proper nouns); tables are
-numbered consecutively.
-
-
-Note that publication-quality tables \emph{do not contain vertical rules.} We
-strongly suggest the use of the \verb+booktabs+ package, which allows for
-typesetting high-quality, professional tables:
-\begin{center}
-    \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-This package was used to typeset Table~\ref{sample-table}.
-
-
-\begin{table}[H]
-    \caption{Sample table title}
-    \label{sample-table}
-    \centering
-    \begin{tabular}{lll}
-        \toprule
-        \multicolumn{2}{c}{Part}                   \\
-        \cmidrule(r){1-2}
-        Name     & Description     & Size ($\mu$m) \\
-        \midrule
-        Dendrite & Input terminal  & $\sim$100     \\
-        Axon     & Output terminal & $\sim$10      \\
-        Soma     & Cell body       & up to $10^6$  \\
-        \bottomrule
-    \end{tabular}
-\end{table}
 \newpage
+
 
 
 \section{Author Contributions}
@@ -283,7 +245,7 @@ This package was used to typeset Table~\ref{sample-table}.
 \textbf{Enhao He}: Proposal (methods part), Support Vector Machine, Final Report (SVM related part). \\
 \textbf{Jiacheng Ma}: Random Forest Classifier, Final Report (RF related part). \\
 \textbf{Joe Wang}: Naive Bayes Classifier, Final Report (NBC related part). \\
-The contributions of each author to sildes are equal. 
+The contributions of each author to slides are equal. 
 \newpage
 
 
