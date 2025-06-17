@@ -216,7 +216,7 @@ This study demonstrates the effectiveness of a simple Gaussian Naive Bayes model
     \end{tabular}
     \label{tab:joe}
 \end{table}
-\textbf{Sample Prediction}:
+\vspace{-0.25cm}
 \begin{figure}[H]
     \centering
     \centering
@@ -227,15 +227,16 @@ This study demonstrates the effectiveness of a simple Gaussian Naive Bayes model
 
 
 \section{Discussions}
-In this work, our results demonstrate that image augmentation and designed feature enhancements can significantly improve retinal vessel segmentation. In particular, the \textbf{optimized K-means clustering} approach yielded notable improvements in sensitivity and AUC compared to the classic K-means variant, even \textbf{\textit{reaching} the level of supervised learning}. The integration of directional features offered additional insights into vessel boundary delineation, although its overall performance was comparatively modest. \\
-Furthermore, while methods such as \textbf{Random Forests}, \textbf{SVM}, and \textbf{Gaussian Naive Bayes} each exhibited unique strengths in pixel classification, our findings indicate that careful handling of feature selection, model optimization, and training data balance is essential for robust segmentation performance, which \textbf{have a chance to make the performance of unsupervised model better than the supervised model}. 
+In this work, our results demonstrate that image augmentation and designed feature enhancements can significantly improve retinal vessel segmentation. In particular, the \textbf{optimized K-means clustering} approach yielded notable improvements in sensitivity and AUC compared to the classic K-means variant, even \textbf{\textit{reaching} the level of supervised learning methods}. The integration of directional features offered additional insights into vessel boundary delineation, although its overall performance was comparatively modest. \\
+Furthermore, while methods such as \textbf{Random Forests}, \textbf{SVM}, and \textbf{Gaussian Naive Bayes} each exhibited unique strengths in pixel classification, our findings indicate that careful handling of feature selection, model optimization, and training data balance is essential for robust segmentation performance, which \textbf{has a chance to make the performance of the unsupervised learning model better than that of the supervised learning model}. 
+\vspace{-0.25cm}
+\paragraph{Performance comparison by AUC:} Optimized K-means (0.66), Random Forest (0.62), SVM (0.60), and Naive Bayes (0.72), with Naive Bayes achieving the best performance.
+\vspace{-0.25cm}
 \paragraph{Future Work:} \hfill \\
 \textbf{1. Dataset Expansion and Diversification:} Evaluating the proposed approaches on larger and more diverse datasets to enhance the generalizability and robustness of the segmentation models. \\
 \textbf{2. Advanced Feature Engineering:} Integrating modern deep learning-based feature extraction techniques and multi-scale analysis to better capture the intricate morphology of retinal vessels. \\
 \textbf{3. Hyperparameter and Solver Optimization:} Conducting systematic hyperparameter tuning (e.g., grid search, Bayesian optimization) and deploying more efficient solver strategies (such as SMO or kernel caching for SVMs) to improve overall model performance. \\
 \textbf{4. Post-Processing Enhancements:} Investigating post-processing approaches such as morphological filtering or conditional random fields (CRF) to further reduce false positives and refine vessel continuity.
-
-
 \newpage
 
 

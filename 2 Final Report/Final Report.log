@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.7)  29 APR 2025 23:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.7)  30 APR 2025 10:05
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -590,25 +590,25 @@ Package pdftex.def Info: Figures/joe.png  used on input line 223.
 [6 <./Figures/joe.png (PNG copy)>]
 
 [7]
-<Figures/1-1 Find the Best n_clusters.png, id=184, 722.7pt x 433.62pt>
+<Figures/1-1 Find the Best n_clusters.png, id=185, 722.7pt x 433.62pt>
 File: Figures/1-1 Find the Best n_clusters.png Graphic file (type png)
 <use Figures/1-1 Find the Best n_clusters.png>
-Package pdftex.def Info: Figures/1-1 Find the Best n_clusters.png  used on input line 259.
+Package pdftex.def Info: Figures/1-1 Find the Best n_clusters.png  used on input line 260.
 (pdftex.def)             Requested size: 361.3491pt x 216.80946pt.
-<Figures/1-2 2 Clusters.png, id=185, 1300.86pt x 993.7125pt>
+<Figures/1-2 2 Clusters.png, id=186, 1300.86pt x 993.7125pt>
 File: Figures/1-2 2 Clusters.png Graphic file (type png)
 <use Figures/1-2 2 Clusters.png>
-Package pdftex.def Info: Figures/1-2 2 Clusters.png  used on input line 266.
+Package pdftex.def Info: Figures/1-2 2 Clusters.png  used on input line 267.
 (pdftex.def)             Requested size: 390.26102pt x 298.11604pt.
-<Figures/1-2 6 Clusters.png, id=186, 1300.86pt x 993.7125pt>
+<Figures/1-2 6 Clusters.png, id=187, 1300.86pt x 993.7125pt>
 File: Figures/1-2 6 Clusters.png Graphic file (type png)
 <use Figures/1-2 6 Clusters.png>
-Package pdftex.def Info: Figures/1-2 6 Clusters.png  used on input line 273.
+Package pdftex.def Info: Figures/1-2 6 Clusters.png  used on input line 274.
 (pdftex.def)             Requested size: 390.26102pt x 298.11604pt.
-<Figures/1-2 10 Clusters.png, id=187, 1300.86pt x 993.7125pt>
+<Figures/1-2 10 Clusters.png, id=188, 1300.86pt x 993.7125pt>
 File: Figures/1-2 10 Clusters.png Graphic file (type png)
 <use Figures/1-2 10 Clusters.png>
-Package pdftex.def Info: Figures/1-2 10 Clusters.png  used on input line 280.
+Package pdftex.def Info: Figures/1-2 10 Clusters.png  used on input line 281.
 (pdftex.def)             Requested size: 390.26102pt x 298.11604pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -616,33 +616,33 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [8 <./Figures/1-1 Find the Best n_clusters.png> <./Figures/1-2 2 Clusters.png>]
-<Figures/2 10 Clusters.png, id=194, 433.62pt x 542.025pt>
+<Figures/2 10 Clusters.png, id=195, 433.62pt x 542.025pt>
 File: Figures/2 10 Clusters.png Graphic file (type png)
 <use Figures/2 10 Clusters.png>
-Package pdftex.def Info: Figures/2 10 Clusters.png  used on input line 287.
+Package pdftex.def Info: Figures/2 10 Clusters.png  used on input line 288.
 (pdftex.def)             Requested size: 216.80946pt x 271.01183pt.
-<Figures/3 Optimized 2nd.png, id=195, 1156.32pt x 361.35pt>
+<Figures/3 Optimized 2nd.png, id=196, 1156.32pt x 361.35pt>
 File: Figures/3 Optimized 2nd.png Graphic file (type png)
 <use Figures/3 Optimized 2nd.png>
-Package pdftex.def Info: Figures/3 Optimized 2nd.png  used on input line 296.
+Package pdftex.def Info: Figures/3 Optimized 2nd.png  used on input line 297.
 (pdftex.def)             Requested size: 346.89868pt x 108.40584pt.
-<Figures/3 Optimized 3rd.png, id=196, 1156.32pt x 361.35pt>
+<Figures/3 Optimized 3rd.png, id=197, 1156.32pt x 361.35pt>
 File: Figures/3 Optimized 3rd.png Graphic file (type png)
 <use Figures/3 Optimized 3rd.png>
-Package pdftex.def Info: Figures/3 Optimized 3rd.png  used on input line 303.
+Package pdftex.def Info: Figures/3 Optimized 3rd.png  used on input line 304.
 (pdftex.def)             Requested size: 346.89868pt x 108.40584pt.
 
 
 [9 <./Figures/1-2 6 Clusters.png> <./Figures/1-2 10 Clusters.png>]
-<Figures/4 Optimized 2nd.png, id=203, 1156.32pt x 361.35pt>
+<Figures/4 Optimized 2nd.png, id=204, 1156.32pt x 361.35pt>
 File: Figures/4 Optimized 2nd.png Graphic file (type png)
 <use Figures/4 Optimized 2nd.png>
-Package pdftex.def Info: Figures/4 Optimized 2nd.png  used on input line 314.
+Package pdftex.def Info: Figures/4 Optimized 2nd.png  used on input line 315.
 (pdftex.def)             Requested size: 346.89868pt x 108.40584pt.
-<Figures/4 Optimized 3rd.png, id=204, 1156.32pt x 361.35pt>
+<Figures/4 Optimized 3rd.png, id=205, 1156.32pt x 361.35pt>
 File: Figures/4 Optimized 3rd.png Graphic file (type png)
 <use Figures/4 Optimized 3rd.png>
-Package pdftex.def Info: Figures/4 Optimized 3rd.png  used on input line 325.
+Package pdftex.def Info: Figures/4 Optimized 3rd.png  used on input line 326.
 (pdftex.def)             Requested size: 346.89868pt x 108.40584pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -650,10 +650,10 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [10 <./Figures/2 10 Clusters.png> <./Figures/3 Optimized 2nd.png> <./Figures/3 Optimized 3rd.png>]
-<Figures/6 Directed (Merge 3 Clusters).png, id=212, 1156.32pt x 361.35pt>
+<Figures/6 Directed (Merge 3 Clusters).png, id=213, 1156.32pt x 361.35pt>
 File: Figures/6 Directed (Merge 3 Clusters).png Graphic file (type png)
 <use Figures/6 Directed (Merge 3 Clusters).png>
-Package pdftex.def Info: Figures/6 Directed (Merge 3 Clusters).png  used on input line 335.
+Package pdftex.def Info: Figures/6 Directed (Merge 3 Clusters).png  used on input line 336.
 (pdftex.def)             Requested size: 346.89868pt x 108.40584pt.
 
 
@@ -668,18 +668,18 @@ Package rerunfilecheck Info: File `"Final Report".out' has not changed.
 (rerunfilecheck)             Checksum: 426B37ADAAEA78084F185C7794F4EFDE;3769.
  ) 
 Here is how much of TeX's memory you used:
- 15486 strings out of 473362
- 247365 string characters out of 5725051
+ 15487 strings out of 473362
+ 247376 string characters out of 5725051
  687855 words of memory out of 5000000
  38099 multiletter control sequences out of 15000+600000
  599532 words of font info for 219 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,11n,79p,1506b,611s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><d:/texlive/2024/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><d:/texlive/2024/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb><d:/texlive/2024/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><d:/texlive/2024/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on "Final Report.pdf" (12 pages, 8736484 bytes).
+Output written on "Final Report.pdf" (12 pages, 8736619 bytes).
 PDF statistics:
- 292 PDF objects out of 1000 (max. 8388607)
- 224 compressed objects within 3 object streams
- 57 named destinations out of 1000 (max. 500000)
+ 293 PDF objects out of 1000 (max. 8388607)
+ 225 compressed objects within 3 object streams
+ 58 named destinations out of 1000 (max. 500000)
  40692 words of extra memory for PDF output out of 42996 (max. 10000000)
 
